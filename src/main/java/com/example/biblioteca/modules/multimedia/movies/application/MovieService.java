@@ -1,0 +1,15 @@
+package com.example.biblioteca.modules.multimedia.movies.application;
+
+import com.example.biblioteca.modules.multimedia.movies.domain.aggregates.Movie;
+import com.example.biblioteca.modules.multimedia.movies.repositories.MovieRepository;
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
+public class MovieService {
+    private final MovieRepository repository;
+
+    public void createMovie(String movieName, int releaseYear) {
+        Movie movie = new Movie(movieName, releaseYear);
+        repository.create(movie);
+    }
+}
