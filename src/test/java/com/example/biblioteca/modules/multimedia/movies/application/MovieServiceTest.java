@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -80,5 +81,12 @@ class MovieServiceTest {
                 InvalidYearForMovie.class,
                 () -> sut.createMovie(A_MOVIE_NAME, 1887)
         );
+    }
+
+    @Test
+    void createMovie_givenAYearGreaterThat1887shouldCreateAMovie() {
+        sut.createMovie(A_MOVIE_NAME, 1888);
+
+        verify(movieRepository).create(any(Movie.class));
     }
 }
