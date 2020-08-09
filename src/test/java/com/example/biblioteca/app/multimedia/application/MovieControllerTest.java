@@ -1,7 +1,7 @@
 package com.example.biblioteca.app.multimedia.application;
 
-import com.example.biblioteca.app.multimedia.requests.MovieRequestVM;
-import com.example.biblioteca.app.multimedia.responses.MovieResponseVM;
+import com.example.biblioteca.app.multimedia.application.requests.MovieRequestVM;
+import com.example.biblioteca.app.multimedia.application.responses.MovieResponseVM;
 import com.example.biblioteca.modules.multimedia.movies.application.MovieService;
 import com.example.biblioteca.modules.multimedia.movies.domain.aggregates.Movie;
 import org.junit.jupiter.api.BeforeEach;
