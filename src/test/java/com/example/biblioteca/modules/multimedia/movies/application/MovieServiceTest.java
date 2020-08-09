@@ -139,9 +139,9 @@ class MovieServiceTest {
 
     @Test
     void updateMovie_shouldUpdateAMovie() {
-        Movie aMovie = new Movie(MOVIE_ID.toString(), A_MOVIE_NAME, A_RELEASE_YEAR);
+        Movie aMovie = new Movie(MOVIE_ID, A_MOVIE_NAME, A_RELEASE_YEAR);
 
-        sut.updateMovie(MOVIE_ID.toString(), A_MOVIE_NAME, A_RELEASE_YEAR);
+        sut.updateMovie(MOVIE_ID, A_MOVIE_NAME, A_RELEASE_YEAR);
 
         verify(movieRepository).update(eq(MOVIE_ID), movieCaptor.capture());
         assertEquals(aMovie, movieCaptor.getValue());
@@ -151,7 +151,7 @@ class MovieServiceTest {
     void updateMovie_givenANullName_shouldThrowInvalidNameForMovie() {
         assertThrows(
                 InvalidNameForMovie.class,
-                () -> sut.updateMovie(MOVIE_ID.toString(), null, A_RELEASE_YEAR)
+                () -> sut.updateMovie(MOVIE_ID, null, A_RELEASE_YEAR)
         );
     }
 
@@ -159,7 +159,7 @@ class MovieServiceTest {
     void updateMovie_givenABlankName_shouldThrowInvalidNameForMovie() {
         assertThrows(
                 InvalidNameForMovie.class,
-                () -> sut.updateMovie(MOVIE_ID.toString(), "  ", A_RELEASE_YEAR)
+                () -> sut.updateMovie(MOVIE_ID, "  ", A_RELEASE_YEAR)
         );
     }
 
@@ -167,7 +167,7 @@ class MovieServiceTest {
     void updateMovie_givenAYearSmallerThat1888_shouldThrowInvalidYearForMovie() {
         assertThrows(
                 InvalidYearForMovie.class,
-                () -> sut.updateMovie(MOVIE_ID.toString(), A_MOVIE_NAME, 1887)
+                () -> sut.updateMovie(MOVIE_ID, A_MOVIE_NAME, 1887)
         );
     }
 }

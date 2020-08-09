@@ -14,15 +14,13 @@ public class Movie {
     private MovieName name;
     private MovieYear year;
 
-    public Movie(String id, String movieName, int year) {
-        this.id = UUID.fromString(id);
+    public Movie(UUID id, String movieName, int year) {
+        this.id = id;
         this.name = new MovieName(movieName);
         this.year = new MovieYear(year);
     }
 
     public Movie(String movieName, int year) {
-        this.id = UUID.randomUUID();
-        this.name = new MovieName(movieName);
-        this.year = new MovieYear(year);
+        this(UUID.randomUUID(), movieName, year);
     }
 }
