@@ -96,4 +96,12 @@ class MovieControllerTest {
         verify(movieService).getMovieById(MOVIE_ID);
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
     }
+
+    @Test
+    void deleteMovie_shouldDeleteTheMovie() {
+        ResponseEntity result = sut.deleteMovie(MOVIE_ID);
+
+        verify(movieService).deleteMovie(MOVIE_ID);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
 }
