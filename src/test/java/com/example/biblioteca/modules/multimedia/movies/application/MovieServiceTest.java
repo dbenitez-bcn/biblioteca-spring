@@ -13,14 +13,19 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 class MovieServiceTest {
     private static final String A_MOVIE_NAME = "Movie name";
     private static final int A_RELEASE_YEAR = 2020;
+    public static final Movie A_MOVIE = new Movie(A_MOVIE_NAME, A_RELEASE_YEAR);
 
     @Mock
     private MovieRepository movieRepository;
@@ -88,5 +93,16 @@ class MovieServiceTest {
         sut.createMovie(A_MOVIE_NAME, 1888);
 
         verify(movieRepository).create(any(Movie.class));
+    }
+
+    @Test
+    void getAllMovies_shouldReturnAllMovies() {
+        List<Movie> movies = asList(A_MOVIE, A_MOVIE, A_MOVIE);
+        when(movieRepository.getAll()).thenReturn(movies);
+
+        List<Movie> result = sut.getAllMovies();
+
+        verify(movieRepository).getAll();
+        assertEquals(movies, result);
     }
 }

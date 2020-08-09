@@ -4,6 +4,8 @@ import com.example.biblioteca.modules.multimedia.movies.domain.aggregates.Movie;
 import com.example.biblioteca.modules.multimedia.movies.repositories.MovieRepository;
 import lombok.AllArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 public class MovieService {
     private final MovieRepository repository;
@@ -11,5 +13,9 @@ public class MovieService {
     public void createMovie(String movieName, int releaseYear) {
         Movie movie = new Movie(movieName, releaseYear);
         repository.create(movie);
+    }
+
+    public List<Movie> getAllMovies() {
+        return repository.getAll();
     }
 }
