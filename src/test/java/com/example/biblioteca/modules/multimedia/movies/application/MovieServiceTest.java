@@ -85,7 +85,7 @@ class MovieServiceTest {
 
 
     @Test
-    void createMovie_givenAnInvalidYear_shouldThrowInvalidYearForMovie() {
+    void createMovie_givenAYearSmallerThat1888_shouldThrowInvalidYearForMovie() {
         assertThrows(
                 InvalidYearForMovie.class,
                 () -> sut.createMovie(A_MOVIE_NAME, 1887)
@@ -93,7 +93,7 @@ class MovieServiceTest {
     }
 
     @Test
-    void createMovie_givenAYearGreaterThat1887shouldCreateAMovie() {
+    void createMovie_givenAYearGreaterThat1887_shouldCreateAMovie() {
         sut.createMovie(A_MOVIE_NAME, 1888);
 
         verify(movieRepository).create(any(Movie.class));
