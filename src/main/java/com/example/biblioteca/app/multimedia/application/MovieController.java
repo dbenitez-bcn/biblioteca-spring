@@ -5,6 +5,7 @@ import com.example.biblioteca.app.multimedia.responses.MovieResponseVM;
 import com.example.biblioteca.modules.multimedia.movies.application.MovieService;
 import com.example.biblioteca.modules.multimedia.movies.domain.aggregates.Movie;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class MovieController {
     @PostMapping
     public ResponseEntity createMovie(@RequestBody MovieRequestVM requestVM) {
         service.createMovie(requestVM.name, requestVM.year);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
@@ -54,7 +55,7 @@ public class MovieController {
     @DeleteMapping(path = "{id}")
     public ResponseEntity deleteMovie(@PathVariable("id") UUID id) {
         service.deleteMovie(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     private MovieResponseVM mapMovieToResponseVM(Movie movie) {

@@ -51,7 +51,7 @@ class MovieControllerTest {
         ResponseEntity result = sut.createMovie(requestVM);
 
         verify(movieService).createMovie(A_MOVIE_NAME, A_RELEASE_YEAR);
-        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(HttpStatus.CREATED, result.getStatusCode());
     }
 
     @Test
@@ -102,6 +102,6 @@ class MovieControllerTest {
         ResponseEntity result = sut.deleteMovie(MOVIE_ID);
 
         verify(movieService).deleteMovie(MOVIE_ID);
-        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
 }
