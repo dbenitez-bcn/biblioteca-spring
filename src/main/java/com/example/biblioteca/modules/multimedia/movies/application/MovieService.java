@@ -5,6 +5,8 @@ import com.example.biblioteca.modules.multimedia.movies.repositories.MovieReposi
 import lombok.AllArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class MovieService {
@@ -17,5 +19,10 @@ public class MovieService {
 
     public List<Movie> getAllMovies() {
         return repository.getAll();
+    }
+
+    public Optional<Movie> getMovieById(UUID id) {
+        Movie movieMaybe = repository.getOneById(id);
+        return Optional.ofNullable(movieMaybe);
     }
 }

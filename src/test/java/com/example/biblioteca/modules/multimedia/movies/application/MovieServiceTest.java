@@ -14,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +27,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 class MovieServiceTest {
     private static final String A_MOVIE_NAME = "Movie name";
     private static final int A_RELEASE_YEAR = 2020;
-    public static final Movie A_MOVIE = new Movie(A_MOVIE_NAME, A_RELEASE_YEAR);
+    private static final Movie A_MOVIE = new Movie(A_MOVIE_NAME, A_RELEASE_YEAR);
+    private static final UUID MOVIE_ID = UUID.randomUUID();
 
     @Mock
     private MovieRepository movieRepository;
@@ -104,5 +107,25 @@ class MovieServiceTest {
 
         verify(movieRepository).getAll();
         assertEquals(movies, result);
+    }
+
+    @Test
+    void getMovieById_whenFindsOneResult_shouldReturnAMovie() {
+        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(A_MOVIE);
+
+        Optional<Movie> movieMaybe = sut.getMovieById(MOVIE_ID);
+
+        verify(movieRepository).getOneById(MOVIE_ID);
+        assertEquals(A_MOVIE, movieMaybe.get());
+    }
+
+    @Test
+    void getMovieById_whenDoNotFindsOneResult_shouldReturnAnEmptyOptional() {
+        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(null);
+
+        Optional<Movie> movieMaybe = sut.getMovieById(MOVIE_ID);
+
+        verify(movieRepository).getOneById(MOVIE_ID);
+        assertFalse(movieMaybe.isPresent());
     }
 }
