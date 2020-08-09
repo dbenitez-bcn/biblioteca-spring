@@ -128,4 +128,11 @@ class MovieServiceTest {
         verify(movieRepository).getOneById(MOVIE_ID);
         assertFalse(movieMaybe.isPresent());
     }
+
+    @Test
+    void deleteMovie_shouldDeleteTheMovie() {
+        sut.deleteMovie(MOVIE_ID);
+
+        verify(movieRepository).delete(MOVIE_ID);
+    }
 }

@@ -25,4 +25,8 @@ public class MovieService {
         Movie movieMaybe = repository.getOneById(id);
         return Optional.ofNullable(movieMaybe);
     }
+
+    public void deleteMovie(UUID id) {
+        repository.delete(id);
+    }
 }

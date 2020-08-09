@@ -9,4 +9,5 @@ public interface MovieRepository {
     void create(Movie movie);
     List<Movie> getAll();
     Movie getOneById(UUID id);
+    void delete(UUID id);
 }
