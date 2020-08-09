@@ -65,4 +65,9 @@ public class MovieController {
                 movie.getYear().getValue()
         );
     }
+
+    public ResponseEntity updateMovie(UUID id, MovieRequestVM requestVM) {
+        service.updateMovie(id, requestVM.name, requestVM.year);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -27,6 +27,7 @@ class MovieControllerTest {
     private static final int A_RELEASE_YEAR = 2020;
     private static final Movie A_MOVIE = new Movie(A_MOVIE_NAME, A_RELEASE_YEAR);
     private static final UUID MOVIE_ID = UUID.randomUUID();
+    private static final MovieRequestVM A_MOVIE_REQUEST = new MovieRequestVM(A_MOVIE_NAME, A_RELEASE_YEAR);
     private static final MovieResponseVM A_MOVIE_RESPONSE = new MovieResponseVM(
             A_MOVIE.getId().toString(),
             A_MOVIE.getName().getValue(),
@@ -46,9 +47,7 @@ class MovieControllerTest {
 
     @Test
     void createMovie_shouldCreateAMovie() {
-        MovieRequestVM requestVM = new MovieRequestVM(A_MOVIE_NAME, A_RELEASE_YEAR);
-
-        ResponseEntity result = sut.createMovie(requestVM);
+        ResponseEntity result = sut.createMovie(A_MOVIE_REQUEST);
 
         verify(movieService).createMovie(A_MOVIE_NAME, A_RELEASE_YEAR);
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
@@ -102,6 +101,14 @@ class MovieControllerTest {
         ResponseEntity result = sut.deleteMovie(MOVIE_ID);
 
         verify(movieService).deleteMovie(MOVIE_ID);
+        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
+    }
+
+    @Test
+    void updateMovie_shouldUpdateTheMovie() {
+        ResponseEntity result = sut.updateMovie(MOVIE_ID, A_MOVIE_REQUEST);
+
+        verify(movieService).updateMovie(MOVIE_ID, A_MOVIE_REQUEST.name, A_MOVIE_REQUEST.year);
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
 }
