@@ -1,4 +1,4 @@
-package com.example.biblioteca.app.multimedia.requests;
+package com.example.biblioteca.app.multimedia.application.requests;
 
 import lombok.AllArgsConstructor;
 

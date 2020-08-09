@@ -1,4 +1,4 @@
-package com.example.biblioteca.app.multimedia.responses;
+package com.example.biblioteca.app.multimedia.application.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
