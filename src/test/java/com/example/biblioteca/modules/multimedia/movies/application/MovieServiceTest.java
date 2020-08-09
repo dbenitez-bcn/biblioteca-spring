@@ -20,6 +20,7 @@ import java.util.UUID;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -134,5 +135,39 @@ class MovieServiceTest {
         sut.deleteMovie(MOVIE_ID);
 
         verify(movieRepository).delete(MOVIE_ID);
+    }
+
+    @Test
+    void updateMovie_shouldUpdateAMovie() {
+        Movie aMovie = new Movie(MOVIE_ID.toString(), A_MOVIE_NAME, A_RELEASE_YEAR);
+
+        sut.updateMovie(MOVIE_ID.toString(), A_MOVIE_NAME, A_RELEASE_YEAR);
+
+        verify(movieRepository).update(eq(MOVIE_ID), movieCaptor.capture());
+        assertEquals(aMovie, movieCaptor.getValue());
+    }
+
+    @Test
+    void updateMovie_givenANullName_shouldThrowInvalidNameForMovie() {
+        assertThrows(
+                InvalidNameForMovie.class,
+                () -> sut.updateMovie(MOVIE_ID.toString(), null, A_RELEASE_YEAR)
+        );
+    }
+
+    @Test
+    void updateMovie_givenABlankName_shouldThrowInvalidNameForMovie() {
+        assertThrows(
+                InvalidNameForMovie.class,
+                () -> sut.updateMovie(MOVIE_ID.toString(), "  ", A_RELEASE_YEAR)
+        );
+    }
+
+    @Test
+    void updateMovie_givenAYearSmallerThat1888_shouldThrowInvalidYearForMovie() {
+        assertThrows(
+                InvalidYearForMovie.class,
+                () -> sut.updateMovie(MOVIE_ID.toString(), A_MOVIE_NAME, 1887)
+        );
     }
 }

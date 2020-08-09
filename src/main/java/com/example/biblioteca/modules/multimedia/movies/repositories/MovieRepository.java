@@ -10,4 +10,5 @@ public interface MovieRepository {
     List<Movie> getAll();
     Movie getOneById(UUID id);
     void delete(UUID id);
+    void update(UUID id, Movie movie);
 }
