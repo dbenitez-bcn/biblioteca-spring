@@ -3,13 +3,17 @@ package com.example.biblioteca.modules.multimedia.movies.application;
 import com.example.biblioteca.modules.multimedia.movies.domain.aggregates.Movie;
 import com.example.biblioteca.modules.multimedia.movies.repositories.MovieRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @AllArgsConstructor
+@Service
 public class MovieService {
+    @Qualifier("inMemory")
     private final MovieRepository repository;
 
     public void createMovie(String movieName, int releaseYear) {

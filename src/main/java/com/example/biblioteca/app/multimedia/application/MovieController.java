@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @RequestMapping("v1/movie")
+@RestController
 public class MovieController {
 
     private final MovieService service;
@@ -58,16 +59,17 @@ public class MovieController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping(path = "{id}")
+    public ResponseEntity updateMovie(@PathVariable("id") UUID id, @RequestBody MovieRequestVM requestVM) {
+        service.updateMovie(id, requestVM.name, requestVM.year);
+        return ResponseEntity.noContent().build();
+    }
+
     private MovieResponseVM mapMovieToResponseVM(Movie movie) {
         return new MovieResponseVM(
                 movie.getId().toString(),
                 movie.getName().getValue(),
                 movie.getYear().getValue()
         );
-    }
-
-    public ResponseEntity updateMovie(UUID id, MovieRequestVM requestVM) {
-        service.updateMovie(id, requestVM.name, requestVM.year);
-        return ResponseEntity.noContent().build();
     }
 }
