@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Service
 public class MovieService {
-    @Qualifier("inMemory")
+    @Qualifier("postgres")
     private final MovieRepository repository;
 
     public void createMovie(String movieName, int releaseYear) {

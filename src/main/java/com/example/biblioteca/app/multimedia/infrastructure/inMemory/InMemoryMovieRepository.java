@@ -2,13 +2,12 @@ package com.example.biblioteca.app.multimedia.infrastructure.inMemory;
 
 import com.example.biblioteca.modules.multimedia.movies.domain.aggregates.Movie;
 import com.example.biblioteca.modules.multimedia.movies.repositories.MovieRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Repository("inMemory")
+//@Repository("inMemory")
 public class InMemoryMovieRepository implements MovieRepository {
     private final List<Movie> db = new ArrayList();
 

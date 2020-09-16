@@ -6,14 +6,16 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "movies")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MovieEntity {
     @Id
-    private Long id;
+    private String id;
     private String name;
     private Integer year;
 }
