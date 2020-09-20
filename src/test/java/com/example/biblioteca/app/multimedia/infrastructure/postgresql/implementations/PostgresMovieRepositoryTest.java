@@ -18,8 +18,7 @@ import static com.example.biblioteca.modules.multimedia.movies.domain.fixtures.M
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 class PostgresMovieRepositoryTest {
@@ -85,6 +84,31 @@ class PostgresMovieRepositoryTest {
         sut.delete(idToDelete);
 
         verify(moviesRepositoryJPA).deleteById(idToDelete.toString());
+    }
+
+    @Test
+    void update_whenMovieExist_shouldUpdateTheMovie() {
+        Movie aMovie = willFindAMovie();
+        MovieEntity movieEntityToSave = new MovieEntity(
+                aMovie.getId().toString(),
+                aMovie.getName().getValue(),
+                aMovie.getYear().getValue()
+        );
+
+        sut.update(aMovie.getId(), aMovie);
+
+        verify(moviesRepositoryJPA).save(movieCaptor.capture());
+        assertThat(movieCaptor.getValue()).isEqualTo(movieEntityToSave);
+    }
+
+    @Test
+    void update_whenMovieDoesNotExist_shouldNotUpdateTheMovie() {
+        willFindNoMovie();
+
+        sut.update(UUID.randomUUID(), randomMovie());
+
+
+        verify(moviesRepositoryJPA, never()).save(any(MovieEntity.class));
     }
 
     private List<MovieEntity> willFindMovies() {

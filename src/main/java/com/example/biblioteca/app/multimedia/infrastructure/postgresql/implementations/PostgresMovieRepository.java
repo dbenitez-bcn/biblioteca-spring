@@ -41,6 +41,9 @@ public class PostgresMovieRepository implements MovieRepository {
 
     @Override
     public void update(UUID id, Movie movie) {
-
+        if (getOneById(id).isPresent()) {
+            MovieEntity movieEntity = new MovieEntity(movie.getId().toString(), movie.getName().getValue(), movie.getYear().getValue());
+            repository.save(movieEntity);
+        }
     }
 }
