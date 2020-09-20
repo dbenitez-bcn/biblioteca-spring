@@ -5,11 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.example.biblioteca.modules.multimedia.movies.domain.fixtures.MovieFixture.randomMovie;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryMovieRepositoryTest {
     private InMemoryMovieRepository sut;
@@ -44,16 +44,16 @@ class InMemoryMovieRepositoryTest {
     void getOneById_whenMovieExist_shouldReturnTheMovieForTheGivenId() {
         Movie randomMovie = willPersistAMovie();
 
-        Movie result = sut.getOneById(randomMovie.getId());
+        Movie result = sut.getOneById(randomMovie.getId()).get();
 
         assertEquals(randomMovie, result);
     }
 
     @Test
     void getOneById_whenMovieDoesNotExist_shouldReturnNull() {
-        Movie result = sut.getOneById(UUID.randomUUID());
+        Optional<Movie> result = sut.getOneById(UUID.randomUUID());
 
-        assertNull(result);
+        assertFalse(result.isPresent());
     }
 
     @Test
@@ -62,7 +62,7 @@ class InMemoryMovieRepositoryTest {
 
         sut.delete(movie.getId());
 
-        assertNull(sut.getOneById(movie.getId()));
+        assertFalse(sut.getOneById(movie.getId()).isPresent());
     }
 
     @Test
@@ -81,7 +81,7 @@ class InMemoryMovieRepositoryTest {
 
         sut.update(originalMovie.getId(), updatedMovie);
 
-        assertEquals(updatedMovie, sut.getOneById(updatedMovie.getId()));
+        assertEquals(updatedMovie, sut.getOneById(updatedMovie.getId()).get());
     }
 
     @Test
@@ -91,7 +91,7 @@ class InMemoryMovieRepositoryTest {
 
         sut.update(UUID.randomUUID(), updatedMovie);
 
-        assertEquals(originalMovie, sut.getOneById(updatedMovie.getId()));
+        assertEquals(originalMovie, sut.getOneById(updatedMovie.getId()).get());
     }
 
     private Movie willPersistAMovie() {

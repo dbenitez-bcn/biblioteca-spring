@@ -5,6 +5,7 @@ import com.example.biblioteca.modules.multimedia.movies.repositories.MovieReposi
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 //@Repository("inMemory")
@@ -22,26 +23,25 @@ public class InMemoryMovieRepository implements MovieRepository {
     }
 
     @Override
-    public Movie getOneById(UUID id) {
+    public Optional<Movie> getOneById(UUID id) {
         return db
                 .stream()
                 .filter(movie -> movie.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
     @Override
     public void delete(UUID id) {
-        Movie movie = getOneById(id);
-        if (movie != null) db.remove(movie);
+        Optional<Movie> movie = getOneById(id);
+        movie.ifPresent(db::remove);
     }
 
     @Override
     public void update(UUID id, Movie movie) {
-        Movie originalMovie = getOneById(id);
-        if (originalMovie != null) {
+        Optional<Movie> originalMovie = getOneById(id);
+        if (originalMovie.isPresent()) {
             Movie updatedMovie = new Movie(id, movie.getName().getValue(), movie.getYear().getValue());
-            int index = db.indexOf(originalMovie);
+            int index = db.indexOf(originalMovie.get());
             db.set(index, updatedMovie);
         }
     }

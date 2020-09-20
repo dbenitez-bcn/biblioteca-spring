@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -28,9 +29,9 @@ public class PostgresMovieRepository implements MovieRepository {
     }
 
     @Override
-    public Movie getOneById(UUID id) {
+    public Optional<Movie> getOneById(UUID id) {
         Movie movie = repository.findById(id.toString()).map(movieEntity -> new Movie(UUID.fromString(movieEntity.getId()), movieEntity.getName(), movieEntity.getYear())).orElse(null);
-        return movie;
+        return Optional.ofNullable(movie);
     }
 
     @Override

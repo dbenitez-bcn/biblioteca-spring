@@ -112,7 +112,7 @@ class MovieServiceTest {
 
     @Test
     void getMovieById_whenFindsOneResult_shouldReturnAMovie() {
-        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(A_MOVIE);
+        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.of(A_MOVIE));
 
         Optional<Movie> movieMaybe = sut.getMovieById(MOVIE_ID);
 
@@ -122,7 +122,7 @@ class MovieServiceTest {
 
     @Test
     void getMovieById_whenDoNotFindsOneResult_shouldReturnAnEmptyOptional() {
-        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(null);
+        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.empty());
 
         Optional<Movie> movieMaybe = sut.getMovieById(MOVIE_ID);
 

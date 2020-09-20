@@ -64,18 +64,18 @@ class PostgresMovieRepositoryTest {
     void getOneById_whenAMovieIsFound_shouldReturnAMovie() {
         Movie aMovie = willFindAMovie();
 
-        Movie result = sut.getOneById(aMovie.getId());
+        Optional<Movie> result = sut.getOneById(aMovie.getId());
 
-        assertThat(result).isEqualTo(aMovie);
+        assertThat(result).contains(aMovie);
     }
 
     @Test
     void getOneById_whenNoMovieIsFound_shouldReturnNull() {
         willFindNoMovie();
 
-        Movie result = sut.getOneById(UUID.randomUUID());
+        Optional<Movie> result = sut.getOneById(UUID.randomUUID());
 
-        assertThat(result).isNull();
+        assertThat(result).isEmpty();
     }
 
     @Test
