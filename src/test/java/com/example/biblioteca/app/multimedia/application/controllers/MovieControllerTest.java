@@ -1,4 +1,4 @@
-package com.example.biblioteca.app.multimedia.application;
+package com.example.biblioteca.app.multimedia.application.controllers;
 
 import com.example.biblioteca.app.multimedia.application.requests.MovieRequestVM;
 import com.example.biblioteca.app.multimedia.application.responses.MovieResponseVM;

@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @RequestMapping("v1/movie")
+@RestController
 public class MovieController {
 
     private final MovieService service;
