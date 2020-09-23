@@ -19,7 +19,8 @@ import java.util.UUID;
 
 import static com.example.biblioteca.modules.multimedia.movies.domain.fixtures.MovieFixture.*;
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -51,41 +52,33 @@ class MovieServiceTest {
 
         verify(movieRepository).create(movieCaptor.capture());
         Movie capturedMovie = movieCaptor.getValue();
-        assertEquals(expectedMovieName, capturedMovie.getName());
-        assertEquals(expectedMovieYear, capturedMovie.getYear());
-        assertNotNull(capturedMovie.getId());
+        assertThat(expectedMovieName).isEqualTo(capturedMovie.getName());
+        assertThat(expectedMovieYear).isEqualTo(capturedMovie.getYear());
+        assertThat(capturedMovie.getId()).isNotNull();
     }
 
     @Test
     void createMovie_givenAnEmptyName_shouldThrowInvalidNameForMovie() {
-        assertThrows(
-                InvalidNameForMovie.class,
-                () -> sut.createMovie("", A_MOVIE_YEAR)
-        );
+        assertThatThrownBy(() -> sut.createMovie("", A_MOVIE_YEAR))
+                .isInstanceOf(InvalidNameForMovie.class);
     }
 
     @Test
     void createMovie_givenANullName_shouldThrowInvalidNameForMovie() {
-        assertThrows(
-                InvalidNameForMovie.class,
-                () -> sut.createMovie(null, A_MOVIE_YEAR)
-        );
+        assertThatThrownBy(() -> sut.createMovie(null, A_MOVIE_YEAR))
+                .isInstanceOf(InvalidNameForMovie.class);
     }
 
     @Test
     void createMovie_givenABlankName_shouldThrowInvalidNameForMovie() {
-        assertThrows(
-                InvalidNameForMovie.class,
-                () -> sut.createMovie("     ", A_MOVIE_YEAR)
-        );
+        assertThatThrownBy(() -> sut.createMovie("     ", A_MOVIE_YEAR))
+                .isInstanceOf(InvalidNameForMovie.class);
     }
 
     @Test
     void createMovie_givenAYearSmallerThat1888_shouldThrowInvalidYearForMovie() {
-        assertThrows(
-                InvalidYearForMovie.class,
-                () -> sut.createMovie(A_MOVIE_NAME, 1887)
-        );
+        assertThatThrownBy(() -> sut.createMovie(A_MOVIE_NAME, 1887))
+                .isInstanceOf(InvalidYearForMovie.class);
     }
 
     @Test
@@ -103,7 +96,7 @@ class MovieServiceTest {
         List<Movie> result = sut.getAllMovies();
 
         verify(movieRepository).getAll();
-        assertEquals(movies, result);
+        assertThat(movies).isEqualTo(result);
     }
 
     @Test
@@ -113,7 +106,7 @@ class MovieServiceTest {
         Optional<Movie> movieMaybe = sut.getMovieById(MOVIE_ID);
 
         verify(movieRepository).getOneById(MOVIE_ID);
-        assertEquals(A_MOVIE, movieMaybe.get());
+        assertThat(A_MOVIE).isEqualTo(movieMaybe.get());
     }
 
     @Test
@@ -123,7 +116,7 @@ class MovieServiceTest {
         Optional<Movie> movieMaybe = sut.getMovieById(MOVIE_ID);
 
         verify(movieRepository).getOneById(MOVIE_ID);
-        assertFalse(movieMaybe.isPresent());
+        assertThat(movieMaybe.isPresent()).isFalse();
     }
 
     @Test
@@ -142,7 +135,7 @@ class MovieServiceTest {
         sut.updateMovie(MOVIE_ID, A_MOVIE_NAME, A_MOVIE_YEAR);
 
         verify(movieRepository).update(eq(MOVIE_ID), movieCaptor.capture());
-        assertEquals(expectedMovieSaved, movieCaptor.getValue());
+        assertThat(expectedMovieSaved).isEqualTo(movieCaptor.getValue());
     }
 
     @Test
@@ -158,29 +151,23 @@ class MovieServiceTest {
     void updateMovie_givenANullName_shouldThrowInvalidNameForMovie() {
         when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.of(A_MOVIE));
 
-        assertThrows(
-                InvalidNameForMovie.class,
-                () -> sut.updateMovie(MOVIE_ID, null, A_MOVIE_YEAR)
-        );
+        assertThatThrownBy(() -> sut.updateMovie(MOVIE_ID, null, A_MOVIE_YEAR))
+                .isInstanceOf(InvalidNameForMovie.class);
     }
 
     @Test
     void updateMovie_givenABlankName_shouldThrowInvalidNameForMovie() {
         when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.of(A_MOVIE));
 
-        assertThrows(
-                InvalidNameForMovie.class,
-                () -> sut.updateMovie(MOVIE_ID, "  ", A_MOVIE_YEAR)
-        );
+        assertThatThrownBy(() -> sut.updateMovie(MOVIE_ID, "  ", A_MOVIE_YEAR))
+                .isInstanceOf(InvalidNameForMovie.class);
     }
 
     @Test
     void updateMovie_givenAYearSmallerThat1888_shouldThrowInvalidYearForMovie() {
         when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.of(A_MOVIE));
 
-        assertThrows(
-                InvalidYearForMovie.class,
-                () -> sut.updateMovie(MOVIE_ID, A_MOVIE_NAME, 1887)
-        );
+        assertThatThrownBy(() -> sut.updateMovie(MOVIE_ID, A_MOVIE_NAME, 1887))
+                .isInstanceOf(InvalidYearForMovie.class);
     }
 }
