@@ -15,8 +15,8 @@ import org.mockito.Mock;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
+import static com.example.biblioteca.modules.multimedia.movies.domain.fixtures.MovieFixture.*;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,10 +26,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 class MovieServiceTest {
-    private static final String A_MOVIE_NAME = "Movie name";
-    private static final int A_RELEASE_YEAR = 2020;
-    private static final Movie A_MOVIE = new Movie(A_MOVIE_NAME, A_RELEASE_YEAR);
-    private static final UUID MOVIE_ID = UUID.randomUUID();
+    private static final Movie A_MOVIE = defaultMovie();
 
     @Mock
     private MovieRepository movieRepository;
@@ -48,9 +45,9 @@ class MovieServiceTest {
     @Test
     void createMovie_shouldCreateAMovie() {
         final MovieName expectedMovieName = new MovieName(A_MOVIE_NAME);
-        final MovieYear expectedMovieYear = new MovieYear(A_RELEASE_YEAR);
+        final MovieYear expectedMovieYear = new MovieYear(A_MOVIE_YEAR);
 
-        sut.createMovie(A_MOVIE_NAME, A_RELEASE_YEAR);
+        sut.createMovie(A_MOVIE_NAME, A_MOVIE_YEAR);
 
         verify(movieRepository).create(movieCaptor.capture());
         Movie capturedMovie = movieCaptor.getValue();
@@ -63,7 +60,7 @@ class MovieServiceTest {
     void createMovie_givenAnEmptyName_shouldThrowInvalidNameForMovie() {
         assertThrows(
                 InvalidNameForMovie.class,
-                () -> sut.createMovie("", A_RELEASE_YEAR)
+                () -> sut.createMovie("", A_MOVIE_YEAR)
         );
     }
 
@@ -71,7 +68,7 @@ class MovieServiceTest {
     void createMovie_givenANullName_shouldThrowInvalidNameForMovie() {
         assertThrows(
                 InvalidNameForMovie.class,
-                () -> sut.createMovie(null, A_RELEASE_YEAR)
+                () -> sut.createMovie(null, A_MOVIE_YEAR)
         );
     }
 
@@ -79,7 +76,7 @@ class MovieServiceTest {
     void createMovie_givenABlankName_shouldThrowInvalidNameForMovie() {
         assertThrows(
                 InvalidNameForMovie.class,
-                () -> sut.createMovie("     ", A_RELEASE_YEAR)
+                () -> sut.createMovie("     ", A_MOVIE_YEAR)
         );
     }
 
@@ -139,9 +136,9 @@ class MovieServiceTest {
 
     @Test
     void updateMovie_shouldUpdateAMovie() {
-        Movie aMovie = new Movie(MOVIE_ID, A_MOVIE_NAME, A_RELEASE_YEAR);
+        Movie aMovie = customMovie(MOVIE_ID, A_MOVIE_NAME, A_MOVIE_YEAR);
 
-        sut.updateMovie(MOVIE_ID, A_MOVIE_NAME, A_RELEASE_YEAR);
+        sut.updateMovie(MOVIE_ID, A_MOVIE_NAME, A_MOVIE_YEAR);
 
         verify(movieRepository).update(eq(MOVIE_ID), movieCaptor.capture());
         assertEquals(aMovie, movieCaptor.getValue());
@@ -151,7 +148,7 @@ class MovieServiceTest {
     void updateMovie_givenANullName_shouldThrowInvalidNameForMovie() {
         assertThrows(
                 InvalidNameForMovie.class,
-                () -> sut.updateMovie(MOVIE_ID, null, A_RELEASE_YEAR)
+                () -> sut.updateMovie(MOVIE_ID, null, A_MOVIE_YEAR)
         );
     }
 
@@ -159,7 +156,7 @@ class MovieServiceTest {
     void updateMovie_givenABlankName_shouldThrowInvalidNameForMovie() {
         assertThrows(
                 InvalidNameForMovie.class,
-                () -> sut.updateMovie(MOVIE_ID, "  ", A_RELEASE_YEAR)
+                () -> sut.updateMovie(MOVIE_ID, "  ", A_MOVIE_YEAR)
         );
     }
 
