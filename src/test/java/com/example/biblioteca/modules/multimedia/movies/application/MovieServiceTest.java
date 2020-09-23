@@ -15,14 +15,12 @@ import org.mockito.Mock;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.example.biblioteca.modules.multimedia.movies.domain.fixtures.MovieFixture.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -50,7 +48,7 @@ class MovieServiceTest {
 
         sut.createMovie(A_MOVIE_NAME, A_MOVIE_YEAR);
 
-        verify(movieRepository).create(movieCaptor.capture());
+        verify(movieRepository).upsert(movieCaptor.capture());
         Movie capturedMovie = movieCaptor.getValue();
         assertThat(expectedMovieName).isEqualTo(capturedMovie.getName());
         assertThat(expectedMovieYear).isEqualTo(capturedMovie.getYear());
@@ -85,7 +83,7 @@ class MovieServiceTest {
     void createMovie_givenAYearGreaterThat1887_shouldCreateAMovie() {
         sut.createMovie(A_MOVIE_NAME, 1888);
 
-        verify(movieRepository).create(any(Movie.class));
+        verify(movieRepository).upsert(any(Movie.class));
     }
 
     @Test
@@ -134,7 +132,7 @@ class MovieServiceTest {
 
         sut.updateMovie(MOVIE_ID, A_MOVIE_NAME, A_MOVIE_YEAR);
 
-        verify(movieRepository).update(eq(MOVIE_ID), movieCaptor.capture());
+        verify(movieRepository).upsert(movieCaptor.capture());
         assertThat(expectedMovieSaved).isEqualTo(movieCaptor.getValue());
     }
 
@@ -144,7 +142,7 @@ class MovieServiceTest {
 
         sut.updateMovie(MOVIE_ID, A_MOVIE_NAME, A_MOVIE_YEAR);
 
-        verify(movieRepository, never()).update(any(UUID.class), any(Movie.class));
+        verify(movieRepository, never()).upsert(any(Movie.class));
     }
 
     @Test

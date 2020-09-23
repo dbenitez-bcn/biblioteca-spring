@@ -18,7 +18,7 @@ public class MovieService {
 
     public void createMovie(String movieName, int releaseYear) {
         Movie movie = new Movie(movieName, releaseYear);
-        repository.create(movie);
+        repository.upsert(movie);
     }
 
     public List<Movie> getAllMovies() {
@@ -37,7 +37,7 @@ public class MovieService {
         Optional<Movie> maybeMovie = repository.getOneById(id);
         maybeMovie.ifPresent(movie -> {
             movie.update(name, year);
-            repository.update(movie.getId(), movie);
+            repository.upsert(movie);
         });
     }
 }

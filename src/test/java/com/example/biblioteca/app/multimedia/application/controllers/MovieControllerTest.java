@@ -13,8 +13,8 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
+import static com.example.biblioteca.modules.multimedia.movies.domain.fixtures.MovieFixture.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,11 +23,8 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 class MovieControllerTest {
-    private static final String A_MOVIE_NAME = "Movie name";
-    private static final int A_RELEASE_YEAR = 2020;
-    private static final Movie A_MOVIE = new Movie(A_MOVIE_NAME, A_RELEASE_YEAR);
-    private static final UUID MOVIE_ID = UUID.randomUUID();
-    private static final MovieRequestVM A_MOVIE_REQUEST = new MovieRequestVM(A_MOVIE_NAME, A_RELEASE_YEAR);
+    private static final Movie A_MOVIE = customMovie(MOVIE_ID, A_MOVIE_NAME, A_MOVIE_YEAR);
+    private static final MovieRequestVM A_MOVIE_REQUEST = new MovieRequestVM(A_MOVIE_NAME, A_MOVIE_YEAR);
     private static final MovieResponseVM A_MOVIE_RESPONSE = new MovieResponseVM(
             A_MOVIE.getId().toString(),
             A_MOVIE.getName().getValue(),
@@ -49,7 +46,7 @@ class MovieControllerTest {
     void createMovie_shouldCreateAMovie() {
         ResponseEntity result = sut.createMovie(A_MOVIE_REQUEST);
 
-        verify(movieService).createMovie(A_MOVIE_NAME, A_RELEASE_YEAR);
+        verify(movieService).createMovie(A_MOVIE_NAME, A_MOVIE_YEAR);
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
     }
 

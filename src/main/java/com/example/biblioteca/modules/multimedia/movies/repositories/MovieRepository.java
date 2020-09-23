@@ -7,9 +7,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface MovieRepository {
-    void create(Movie movie);
+    void upsert(Movie movie);
     List<Movie> getAll();
     Optional<Movie> getOneById(UUID id);
     void delete(UUID id);
-    void update(UUID id, Movie movie);
 }

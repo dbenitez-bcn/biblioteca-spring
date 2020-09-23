@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.example.biblioteca.modules.multimedia.movies.domain.fixtures.MovieFixture.customMovie;
 import static com.example.biblioteca.modules.multimedia.movies.domain.fixtures.MovieFixture.randomMovie;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class InMemoryMovieRepositoryTest {
     private InMemoryMovieRepository sut;
@@ -20,10 +22,20 @@ class InMemoryMovieRepositoryTest {
     }
 
     @Test
-    void create_shouldStoreTheMovie() {
-        sut.create(randomMovie());
+    void upsert_whenTheMovieDoesNotExist_shouldStoreTheMovie() {
+        sut.upsert(randomMovie());
 
         assertEquals(1, sut.getAll().size());
+    }
+
+    @Test
+    void upsert_whenTheMovieExist_shouldUpdateIt() {
+        Movie originalMovie = willPersistAMovie();
+        Movie updatedMovie = customMovie(originalMovie.getId(), "New Name", 1998);
+
+        sut.upsert(updatedMovie);
+
+        assertEquals(updatedMovie, sut.getOneById(updatedMovie.getId()).get());
     }
 
     @Test
@@ -74,29 +86,9 @@ class InMemoryMovieRepositoryTest {
         assertEquals(1, sut.getAll().size());
     }
 
-    @Test
-    void update_whenTheMovieExist_shouldUpdateIt() {
-        Movie originalMovie = willPersistAMovie();
-        Movie updatedMovie = new Movie(originalMovie.getId(), "New Name", 1998);
-
-        sut.update(originalMovie.getId(), updatedMovie);
-
-        assertEquals(updatedMovie, sut.getOneById(updatedMovie.getId()).get());
-    }
-
-    @Test
-    void update_whenTheMovieDoesNotExist_shouldNotDoAnything() {
-        Movie originalMovie = willPersistAMovie();
-        Movie updatedMovie = new Movie(originalMovie.getId(), "New Name", 1998);
-
-        sut.update(UUID.randomUUID(), updatedMovie);
-
-        assertEquals(originalMovie, sut.getOneById(updatedMovie.getId()).get());
-    }
-
     private Movie willPersistAMovie() {
         Movie movie = randomMovie();
-        sut.create(movie);
+        sut.upsert(movie);
         return movie;
     }
 }

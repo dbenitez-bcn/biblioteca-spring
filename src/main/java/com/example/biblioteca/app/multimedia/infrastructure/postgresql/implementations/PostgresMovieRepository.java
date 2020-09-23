@@ -17,7 +17,7 @@ public class PostgresMovieRepository implements MovieRepository {
     private final MoviesRepositoryJPA repository;
 
     @Override
-    public void create(Movie movie) {
+    public void upsert(Movie movie) {
         MovieEntity movieEntity = new MovieEntity(movie.getId().toString(), movie.getName().getValue(), movie.getYear().getValue());
         repository.save(movieEntity);
     }
@@ -37,13 +37,5 @@ public class PostgresMovieRepository implements MovieRepository {
     @Override
     public void delete(UUID id) {
         repository.deleteById(id.toString());
-    }
-
-    @Override
-    public void update(UUID id, Movie movie) {
-        if (getOneById(id).isPresent()) {
-            MovieEntity movieEntity = new MovieEntity(movie.getId().toString(), movie.getName().getValue(), movie.getYear().getValue());
-            repository.save(movieEntity);
-        }
     }
 }

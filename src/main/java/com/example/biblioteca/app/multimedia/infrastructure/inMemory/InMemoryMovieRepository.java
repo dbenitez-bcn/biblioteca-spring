@@ -13,8 +13,15 @@ public class InMemoryMovieRepository implements MovieRepository {
     private final List<Movie> db = new ArrayList();
 
     @Override
-    public void create(Movie movie) {
-        db.add(movie);
+    public void upsert(Movie movie) {
+        Optional<Movie> originalMovie = getOneById(movie.getId());
+        if (originalMovie.isPresent()) {
+            Movie updatedMovie = new Movie(movie.getId(), movie.getName().getValue(), movie.getYear().getValue());
+            int index = db.indexOf(originalMovie.get());
+            db.set(index, updatedMovie);
+        } else {
+            db.add(movie);
+        }
     }
 
     @Override
@@ -34,15 +41,5 @@ public class InMemoryMovieRepository implements MovieRepository {
     public void delete(UUID id) {
         Optional<Movie> movie = getOneById(id);
         movie.ifPresent(db::remove);
-    }
-
-    @Override
-    public void update(UUID id, Movie movie) {
-        Optional<Movie> originalMovie = getOneById(id);
-        if (originalMovie.isPresent()) {
-            Movie updatedMovie = new Movie(id, movie.getName().getValue(), movie.getYear().getValue());
-            int index = db.indexOf(originalMovie.get());
-            db.set(index, updatedMovie);
-        }
     }
 }
