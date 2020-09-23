@@ -23,4 +23,9 @@ public class Movie {
     public Movie(String movieName, int year) {
         this(UUID.randomUUID(), movieName, year);
     }
+
+    public void update(String name, int year) {
+        this.name = new MovieName(name);
+        this.year = new MovieYear(year);
+    }
 }
