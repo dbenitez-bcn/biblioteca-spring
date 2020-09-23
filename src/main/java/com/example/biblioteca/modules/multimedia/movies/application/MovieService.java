@@ -34,7 +34,10 @@ public class MovieService {
     }
 
     public void updateMovie(UUID id, String name, int year) {
-        Movie movie = new Movie(id, name, year);
-        repository.update(movie.getId(), movie);
+        Optional<Movie> maybeMovie = repository.getOneById(id);
+        maybeMovie.ifPresent(movie -> {
+            movie.update(name, year);
+            repository.update(movie.getId(), movie);
+        });
     }
 }

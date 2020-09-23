@@ -15,14 +15,14 @@ import org.mockito.Mock;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.example.biblioteca.modules.multimedia.movies.domain.fixtures.MovieFixture.*;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 class MovieServiceTest {
@@ -80,7 +80,6 @@ class MovieServiceTest {
         );
     }
 
-
     @Test
     void createMovie_givenAYearSmallerThat1888_shouldThrowInvalidYearForMovie() {
         assertThrows(
@@ -135,17 +134,30 @@ class MovieServiceTest {
     }
 
     @Test
-    void updateMovie_shouldUpdateAMovie() {
-        Movie aMovie = customMovie(MOVIE_ID, A_MOVIE_NAME, A_MOVIE_YEAR);
+    void updateMovie_whenMovieExist_shouldUpdateAMovie() {
+        Movie movieToUpdate = customMovie(MOVIE_ID, "wrong name", 2000);
+        Movie expectedMovieSaved = customMovie(MOVIE_ID, A_MOVIE_NAME, A_MOVIE_YEAR);
+        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.of(movieToUpdate));
 
         sut.updateMovie(MOVIE_ID, A_MOVIE_NAME, A_MOVIE_YEAR);
 
         verify(movieRepository).update(eq(MOVIE_ID), movieCaptor.capture());
-        assertEquals(aMovie, movieCaptor.getValue());
+        assertEquals(expectedMovieSaved, movieCaptor.getValue());
+    }
+
+    @Test
+    void updateMovie_whenMovieDoesNotExist_shouldNotUpdateAMovie() {
+        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.empty());
+
+        sut.updateMovie(MOVIE_ID, A_MOVIE_NAME, A_MOVIE_YEAR);
+
+        verify(movieRepository, never()).update(any(UUID.class), any(Movie.class));
     }
 
     @Test
     void updateMovie_givenANullName_shouldThrowInvalidNameForMovie() {
+        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.of(A_MOVIE));
+
         assertThrows(
                 InvalidNameForMovie.class,
                 () -> sut.updateMovie(MOVIE_ID, null, A_MOVIE_YEAR)
@@ -154,6 +166,8 @@ class MovieServiceTest {
 
     @Test
     void updateMovie_givenABlankName_shouldThrowInvalidNameForMovie() {
+        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.of(A_MOVIE));
+
         assertThrows(
                 InvalidNameForMovie.class,
                 () -> sut.updateMovie(MOVIE_ID, "  ", A_MOVIE_YEAR)
@@ -162,6 +176,8 @@ class MovieServiceTest {
 
     @Test
     void updateMovie_givenAYearSmallerThat1888_shouldThrowInvalidYearForMovie() {
+        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.of(A_MOVIE));
+
         assertThrows(
                 InvalidYearForMovie.class,
                 () -> sut.updateMovie(MOVIE_ID, A_MOVIE_NAME, 1887)
