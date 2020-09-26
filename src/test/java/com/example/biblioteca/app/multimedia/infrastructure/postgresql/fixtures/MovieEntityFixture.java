@@ -1,6 +1,7 @@
 package com.example.biblioteca.app.multimedia.infrastructure.postgresql.fixtures;
 
 import com.example.biblioteca.app.multimedia.infrastructure.postgresql.entities.MovieEntity;
+import com.example.biblioteca.modules.multimedia.movies.domain.aggregates.Movie;
 
 import java.util.UUID;
 
@@ -19,5 +20,13 @@ public class MovieEntityFixture {
 
     public static MovieEntity customMovieEntity(String id, String name, int year) {
         return new MovieEntity(id, name, year);
+    }
+
+    public static MovieEntity customMovieEntity(Movie movie) {
+        return new MovieEntity(
+                movie.getId().toString(),
+                movie.getName().getValue(),
+                movie.getYear().getValue()
+        );
     }
 }
