@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
     private final AccountService accountService;
 
-    @PostMapping(name = "/v1/register")
+    @PostMapping("/v1/register")
     public void register(@RequestBody RegisterRequestVM requestVM) {
         accountService.register(requestVM.email, requestVM.password);
     }
