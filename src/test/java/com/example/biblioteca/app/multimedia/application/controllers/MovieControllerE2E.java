@@ -3,7 +3,6 @@ package com.example.biblioteca.app.multimedia.application.controllers;
 import com.example.biblioteca.ApplicationTestCase;
 import com.example.biblioteca.modules.multimedia.movies.domain.aggregates.Movie;
 import org.json.JSONObject;
-import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
@@ -11,7 +10,7 @@ import static com.example.biblioteca.modules.multimedia.movies.domain.fixtures.M
 
 class MovieControllerE2E extends ApplicationTestCase {
 
-    @Test
+    //@Test
     void happyPath_userCreatesAMovieThatCouldFind() throws Exception {
         Movie movie = randomMovie();
 
