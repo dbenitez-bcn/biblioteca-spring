@@ -30,8 +30,8 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	implementation 'org.springframework.security:spring-security-core:5.1.5.RELEASE'
-	implementation 'org.springframework.security:spring-security-web:5.1.5.RELEASE'
-	implementation 'org.springframework.security:spring-security-config:5.1.5.RELEASE'
+//	implementation 'org.springframework.security:spring-security-web:5.1.5.RELEASE'
+//	implementation 'org.springframework.security:spring-security-config:5.1.5.RELEASE'
 	implementation 'org.flywaydb:flyway-core'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'org.postgresql:postgresql'

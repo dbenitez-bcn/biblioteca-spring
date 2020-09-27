@@ -1,4 +1,4 @@
-package com.example.biblioteca.app.multimedia.application.exceptions;
+package com.example.biblioteca.app.shared.exceptions;
 
 import lombok.RequiredArgsConstructor;
 

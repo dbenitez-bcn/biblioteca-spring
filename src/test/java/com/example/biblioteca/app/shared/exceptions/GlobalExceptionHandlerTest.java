@@ -1,4 +1,4 @@
-package com.example.biblioteca.app.multimedia.application.exceptions;
+package com.example.biblioteca.app.shared.exceptions;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;

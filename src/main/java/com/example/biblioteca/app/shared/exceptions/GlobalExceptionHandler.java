@@ -1,4 +1,4 @@
-package com.example.biblioteca.app.multimedia.application.exceptions;
+package com.example.biblioteca.app.shared.exceptions;
 
 import com.example.biblioteca.modules.multimedia.movies.domain.exceptions.InvalidNameForMovie;
 import com.example.biblioteca.modules.multimedia.movies.domain.exceptions.InvalidYearForMovie;
