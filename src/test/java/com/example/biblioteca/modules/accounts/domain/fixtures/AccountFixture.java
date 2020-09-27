@@ -10,4 +10,8 @@ public class AccountFixture {
     public static Account customAccount(String email, String password) {
         return new Account(email, password);
     }
+
+    public static Account defaultAccount() {
+        return new Account(ACCOUNT_EMAIL, ENCODED_PASSWORD);
+    }
 }
