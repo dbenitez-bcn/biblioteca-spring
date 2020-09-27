@@ -1,7 +1,7 @@
 package com.example.biblioteca.modules.accounts.domain.aggregates;
 
 import com.example.biblioteca.modules.accounts.domain.valueObjects.AccountEmail;
-import com.example.biblioteca.modules.accounts.domain.valueObjects.AccountPassword;
+import com.example.biblioteca.modules.accounts.domain.valueObjects.PlainPassword;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -13,11 +13,11 @@ import java.util.UUID;
 public class Account {
     private UUID id;
     private AccountEmail email;
-    private AccountPassword password;
+    private PlainPassword password;
 
     public Account(String email, String password) {
         this.id = UUID.randomUUID();
         this.email = new AccountEmail(email);
-        this.password = new AccountPassword(password);
+        this.password = new PlainPassword(password);
     }
 }

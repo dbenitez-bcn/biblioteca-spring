@@ -4,10 +4,10 @@ import com.example.biblioteca.modules.accounts.domain.exceptions.InvalidPassword
 import lombok.Getter;
 
 @Getter
-public class AccountPassword {
+public class PlainPassword {
     private final String value;
 
-    public AccountPassword(String value) {
+    public PlainPassword(String value) {
         if (!isPasswordValid(value)) {
             throw new InvalidPasswordFormat();
         }
