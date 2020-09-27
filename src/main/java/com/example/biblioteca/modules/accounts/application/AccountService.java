@@ -4,7 +4,9 @@ import com.example.biblioteca.modules.accounts.domain.aggregates.Account;
 import com.example.biblioteca.modules.accounts.domain.valueObjects.PlainPassword;
 import com.example.biblioteca.modules.accounts.repositories.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 public class AccountService {
     private final AccountRepository accountRepository;
