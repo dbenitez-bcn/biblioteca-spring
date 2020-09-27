@@ -8,7 +8,7 @@ public class PlainPassword {
     private final String value;
 
     public PlainPassword(String value) {
-        if (!isPasswordValid(value)) {
+        if (value == null || !isPasswordValid(value)) {
             throw new InvalidPasswordFormat();
         }
         this.value = value;

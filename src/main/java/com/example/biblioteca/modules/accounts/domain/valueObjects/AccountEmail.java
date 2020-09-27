@@ -11,7 +11,7 @@ public class AccountEmail {
     private final String value;
 
     public AccountEmail(String value) {
-        if (!isEmailValid(value)) {
+        if (value == null || !isEmailValid(value)) {
             throw new InvalidEmailAddress();
         }
 

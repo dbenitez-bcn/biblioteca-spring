@@ -42,7 +42,6 @@ class AccountServiceTest {
     }
 
 
-
     @Test
     void register_shouldCreateANewUser() {
         when(passwordChecker.encode(any(PlainPassword.class))).thenReturn(ENCODED_PASSWORD);
@@ -73,10 +72,23 @@ class AccountServiceTest {
                 .isInstanceOf(InvalidEmailAddress.class);
     }
 
+    @Test
+    void register_whenNodEmailIsIntroduced_shouldThrowInvalidEmailAddress() {
+        assertThatThrownBy(() -> sut.register(null, ACCOUNT_PASSWORD))
+                .isInstanceOf(InvalidEmailAddress.class);
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"", "  ", "password", "1234", "pass123"})
     void register_whenInvalidPasswordIsIntroduced_shouldThrowInvalidPasswordFormat(String password) {
         assertThatThrownBy(() -> sut.register(ACCOUNT_EMAIL, password))
+                .isInstanceOf(InvalidPasswordFormat.class)
+                .hasMessage("Should have at least 8 characters and contain numbers and letters");
+    }
+
+    @Test
+    void register_whenNoPasswordIsIntroduced_shouldThrowInvalidPasswordFormat() {
+        assertThatThrownBy(() -> sut.register(ACCOUNT_EMAIL, null))
                 .isInstanceOf(InvalidPasswordFormat.class)
                 .hasMessage("Should have at least 8 characters and contain numbers and letters");
     }
