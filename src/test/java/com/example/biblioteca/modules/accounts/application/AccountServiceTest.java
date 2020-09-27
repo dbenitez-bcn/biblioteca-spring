@@ -3,6 +3,7 @@ package com.example.biblioteca.modules.accounts.application;
 import com.example.biblioteca.modules.accounts.domain.aggregates.Account;
 import com.example.biblioteca.modules.accounts.domain.exceptions.InvalidEmailAddress;
 import com.example.biblioteca.modules.accounts.domain.exceptions.InvalidPasswordFormat;
+import com.example.biblioteca.modules.accounts.domain.valueObjects.PlainPassword;
 import com.example.biblioteca.modules.accounts.repositories.AccountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,36 +14,56 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static com.example.biblioteca.modules.accounts.domain.fixtures.AccountFixture.ACCOUNT_EMAIL;
-import static com.example.biblioteca.modules.accounts.domain.fixtures.AccountFixture.ACCOUNT_PASSWORD;
+import static com.example.biblioteca.modules.accounts.domain.fixtures.AccountFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 class AccountServiceTest {
     @Mock
     private AccountRepository accountRepository;
+    @Mock
+    private PasswordChecker passwordChecker;
 
     @InjectMocks
     private AccountService sut;
 
     @Captor
     private ArgumentCaptor<Account> accountCaptor;
+    @Captor
+    private ArgumentCaptor<PlainPassword> passwordCaptor;
 
     @BeforeEach
     void setUp() {
         initMocks(this);
     }
 
+
+
     @Test
     void register_shouldCreateANewUser() {
+        when(passwordChecker.encode(any(PlainPassword.class))).thenReturn(ENCODED_PASSWORD);
+
         sut.register(ACCOUNT_EMAIL, ACCOUNT_PASSWORD);
 
         verify(accountRepository).create(accountCaptor.capture());
         Account capturedAccount = accountCaptor.getValue();
         assertThat(capturedAccount.getEmail().getValue()).isEqualTo(ACCOUNT_EMAIL);
-        assertThat(capturedAccount.getPassword().getValue()).isEqualTo(ACCOUNT_PASSWORD);
+        assertThat(capturedAccount.getPassword().getValue()).isEqualTo(ENCODED_PASSWORD);
+    }
+
+    @Test
+    void register_shouldEncodeThePassword() {
+        when(passwordChecker.encode(any(PlainPassword.class))).thenReturn(ENCODED_PASSWORD);
+
+        sut.register(ACCOUNT_EMAIL, ACCOUNT_PASSWORD);
+
+        verify(passwordChecker).encode(passwordCaptor.capture());
+        PlainPassword capturedPassword = passwordCaptor.getValue();
+        assertThat(capturedPassword.getValue()).isEqualTo(ACCOUNT_PASSWORD);
     }
 
     @ParameterizedTest

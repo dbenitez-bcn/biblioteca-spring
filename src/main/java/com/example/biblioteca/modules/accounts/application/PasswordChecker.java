@@ -1,6 +1,5 @@
 package com.example.biblioteca.modules.accounts.application;
 
-import com.example.biblioteca.modules.accounts.domain.valueObjects.HashedPassword;
 import com.example.biblioteca.modules.accounts.domain.valueObjects.PlainPassword;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -15,9 +14,7 @@ class PasswordChecker {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public HashedPassword encode(PlainPassword plainPassword) {
-        String encodedPassword = bCryptPasswordEncoder.encode(plainPassword.getValue());
-
-        return new HashedPassword(encodedPassword);
+    public String encode(PlainPassword plainPassword) {
+        return bCryptPasswordEncoder.encode(plainPassword.getValue());
     }
 }
