@@ -16,7 +16,11 @@ public class Account {
     private HashedPassword password;
 
     public Account(String email, String password) {
-        this.id = UUID.randomUUID();
+        this(UUID.randomUUID(), email, password);
+    }
+
+    public Account(UUID id, String email, String password) {
+        this.id = id;
         this.email = new AccountEmail(email);
         this.password = new HashedPassword(password);
     }
