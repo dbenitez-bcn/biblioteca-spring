@@ -1,8 +1,10 @@
 package com.example.biblioteca.modules.accounts.application;
 
 import com.example.biblioteca.modules.accounts.domain.aggregates.Account;
+import com.example.biblioteca.modules.accounts.domain.exceptions.EmailAlreadyInUse;
 import com.example.biblioteca.modules.accounts.domain.exceptions.InvalidEmailAddress;
 import com.example.biblioteca.modules.accounts.domain.exceptions.InvalidPasswordFormat;
+import com.example.biblioteca.modules.accounts.domain.valueObjects.AccountEmail;
 import com.example.biblioteca.modules.accounts.domain.valueObjects.PlainPassword;
 import com.example.biblioteca.modules.accounts.repositories.AccountRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +15,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import java.util.Optional;
 
 import static com.example.biblioteca.modules.accounts.domain.fixtures.AccountFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -91,5 +95,14 @@ class AccountServiceTest {
         assertThatThrownBy(() -> sut.register(ACCOUNT_EMAIL, null))
                 .isInstanceOf(InvalidPasswordFormat.class)
                 .hasMessage("Should have at least 8 characters and contain numbers and letters");
+    }
+
+    @Test
+    void register_whenAccountAlreadyExist_shouldThrowEmailAlreadyInUse() {
+        when(accountRepository.getByEmail(new AccountEmail(ACCOUNT_EMAIL))).thenReturn(Optional.of(defaultAccount()));
+
+        assertThatThrownBy(() -> sut.register(ACCOUNT_EMAIL, ACCOUNT_PASSWORD))
+                .isInstanceOf(EmailAlreadyInUse.class);
+
     }
 }
