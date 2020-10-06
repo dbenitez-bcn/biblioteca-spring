@@ -3,6 +3,7 @@ package com.example.biblioteca.app.shared.exceptions;
 import com.example.biblioteca.modules.accounts.domain.exceptions.EmailAlreadyInUse;
 import com.example.biblioteca.modules.accounts.domain.exceptions.InvalidEmailAddress;
 import com.example.biblioteca.modules.accounts.domain.exceptions.InvalidPasswordFormat;
+import com.example.biblioteca.modules.accounts.domain.exceptions.LoginFailed;
 import com.example.biblioteca.modules.multimedia.movies.domain.exceptions.InvalidNameForMovie;
 import com.example.biblioteca.modules.multimedia.movies.domain.exceptions.InvalidYearForMovie;
 import org.springframework.http.ResponseEntity;
@@ -39,5 +40,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDetails> invalidPasswordFormat(InvalidPasswordFormat exception) {
         ErrorDetails errorDetails = new ErrorDetails("Invalid password format: " + exception.getMessage());
         return ResponseEntity.status(422).body(errorDetails);
+    }
+
+    @ExceptionHandler(LoginFailed.class)
+    public ResponseEntity<ErrorDetails> loginFailed() {
+        ErrorDetails errorDetails = new ErrorDetails("Invalid email or password");
+        return ResponseEntity.status(403).body(errorDetails);
     }
 }

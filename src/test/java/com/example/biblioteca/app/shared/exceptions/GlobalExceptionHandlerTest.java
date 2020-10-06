@@ -51,4 +51,12 @@ class GlobalExceptionHandlerTest {
         assertThat(result.getStatusCodeValue()).isEqualTo(422);
         assertThat(result.getBody().message).isEqualTo("Invalid password format: " + exception.getMessage());
     }
+
+    @Test
+    void loginFailed_shouldHandleLoginFailed() {
+        ResponseEntity<ErrorDetails> result = sut.loginFailed();
+
+        assertThat(result.getStatusCodeValue()).isEqualTo(403);
+        assertThat(result.getBody().message).isEqualTo("Invalid email or password");
+    }
 }
