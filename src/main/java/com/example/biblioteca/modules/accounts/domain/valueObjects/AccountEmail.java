@@ -1,12 +1,14 @@
 package com.example.biblioteca.modules.accounts.domain.valueObjects;
 
 import com.example.biblioteca.modules.accounts.domain.exceptions.InvalidEmailAddress;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Getter
+@EqualsAndHashCode
 public class AccountEmail {
     private final String value;
 

@@ -1,9 +1,11 @@
 package com.example.biblioteca.modules.accounts.domain.valueObjects;
 
 import com.example.biblioteca.modules.accounts.domain.exceptions.InvalidPasswordFormat;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode
 public class PlainPassword {
     private final String value;
 
