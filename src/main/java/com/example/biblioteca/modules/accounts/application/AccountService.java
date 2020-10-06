@@ -2,6 +2,7 @@ package com.example.biblioteca.modules.accounts.application;
 
 import com.example.biblioteca.modules.accounts.domain.aggregates.Account;
 import com.example.biblioteca.modules.accounts.domain.exceptions.EmailAlreadyInUse;
+import com.example.biblioteca.modules.accounts.domain.exceptions.LoginFailed;
 import com.example.biblioteca.modules.accounts.domain.valueObjects.AccountEmail;
 import com.example.biblioteca.modules.accounts.domain.valueObjects.PlainPassword;
 import com.example.biblioteca.modules.accounts.repositories.AccountRepository;
@@ -24,5 +25,17 @@ public class AccountService {
         String hashedPassword = passwordEncoder.encode(new PlainPassword(password));
         Account account = new Account(email, hashedPassword);
         accountRepository.create(account);
+    }
+
+    public String login(String email, String password) {
+        Optional<Account> accountMaybe = accountRepository.getByEmail(new AccountEmail(email));
+        if (accountMaybe.isPresent()) {
+            boolean passwordMatches = passwordEncoder
+                    .matches(new PlainPassword(password), accountMaybe.get().getPassword());
+            if (passwordMatches) {
+                return "TOKEN";
+            }
+        }
+        throw new LoginFailed();
     }
 }

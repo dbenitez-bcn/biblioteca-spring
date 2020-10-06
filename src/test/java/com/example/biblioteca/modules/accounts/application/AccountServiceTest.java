@@ -4,7 +4,9 @@ import com.example.biblioteca.modules.accounts.domain.aggregates.Account;
 import com.example.biblioteca.modules.accounts.domain.exceptions.EmailAlreadyInUse;
 import com.example.biblioteca.modules.accounts.domain.exceptions.InvalidEmailAddress;
 import com.example.biblioteca.modules.accounts.domain.exceptions.InvalidPasswordFormat;
+import com.example.biblioteca.modules.accounts.domain.exceptions.LoginFailed;
 import com.example.biblioteca.modules.accounts.domain.valueObjects.AccountEmail;
+import com.example.biblioteca.modules.accounts.domain.valueObjects.HashedPassword;
 import com.example.biblioteca.modules.accounts.domain.valueObjects.PlainPassword;
 import com.example.biblioteca.modules.accounts.repositories.AccountRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -99,10 +101,57 @@ class AccountServiceTest {
 
     @Test
     void register_whenAccountAlreadyExist_shouldThrowEmailAlreadyInUse() {
-        when(accountRepository.getByEmail(new AccountEmail(ACCOUNT_EMAIL))).thenReturn(Optional.of(defaultAccount()));
+        willFindAnAccount(defaultAccount());
 
         assertThatThrownBy(() -> sut.register(ACCOUNT_EMAIL, ACCOUNT_PASSWORD))
                 .isInstanceOf(EmailAlreadyInUse.class);
 
+        verify(accountRepository).getByEmail(new AccountEmail(ACCOUNT_EMAIL));
+    }
+
+    @Test
+    void login_whenCredentialsAreCorrect_shouldLoginTheAccount() {
+        Account account = customAccount(ACCOUNT_EMAIL, ACCOUNT_PASSWORD);
+        willFindAnAccount(account);
+        passwordMatch();
+
+        String token = sut.login(ACCOUNT_EMAIL, ACCOUNT_PASSWORD);
+
+        verify(accountRepository).getByEmail(new AccountEmail(ACCOUNT_EMAIL));
+        verify(passwordEncoder).matches(new PlainPassword(account.getPassword().getValue()), account.getPassword());
+        assertThat(token).isEqualTo("TOKEN");
+    }
+
+    @Test
+    void login_whenUserNotFound_shouldFailLogin() {
+        willFindNoAccount();
+
+        assertThatThrownBy(() -> sut.login(ACCOUNT_EMAIL, ACCOUNT_PASSWORD))
+                .isInstanceOf(LoginFailed.class);
+    }
+
+    @Test
+    void login_whenPasswordDoesNotMatch_shouldFailLogin() {
+        willFindAnAccount(defaultAccount());
+        passwordsWillNotMatch();
+
+        assertThatThrownBy(() -> sut.login(ACCOUNT_EMAIL, ACCOUNT_PASSWORD))
+                .isInstanceOf(LoginFailed.class);
+    }
+
+    private void willFindAnAccount(Account account) {
+        when(accountRepository.getByEmail(any(AccountEmail.class))).thenReturn(Optional.of(account));
+    }
+
+    private void willFindNoAccount() {
+        when(accountRepository.getByEmail(any(AccountEmail.class))).thenReturn(Optional.empty());
+    }
+
+    private void passwordMatch() {
+        when(passwordEncoder.matches(any(PlainPassword.class), any(HashedPassword.class))).thenReturn(true);
+    }
+
+    private void passwordsWillNotMatch() {
+        when(passwordEncoder.matches(any(PlainPassword.class), any(HashedPassword.class))).thenReturn(false);
     }
 }
