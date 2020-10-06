@@ -30,7 +30,7 @@ class AccountServiceTest {
     @Mock
     private AccountRepository accountRepository;
     @Mock
-    private PasswordChecker passwordChecker;
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private AccountService sut;
@@ -48,7 +48,7 @@ class AccountServiceTest {
 
     @Test
     void register_shouldCreateANewUser() {
-        when(passwordChecker.encode(any(PlainPassword.class))).thenReturn(ENCODED_PASSWORD);
+        when(passwordEncoder.encode(any(PlainPassword.class))).thenReturn(ENCODED_PASSWORD);
 
         sut.register(ACCOUNT_EMAIL, ACCOUNT_PASSWORD);
 
@@ -60,11 +60,11 @@ class AccountServiceTest {
 
     @Test
     void register_shouldEncodeThePassword() {
-        when(passwordChecker.encode(any(PlainPassword.class))).thenReturn(ENCODED_PASSWORD);
+        when(passwordEncoder.encode(any(PlainPassword.class))).thenReturn(ENCODED_PASSWORD);
 
         sut.register(ACCOUNT_EMAIL, ACCOUNT_PASSWORD);
 
-        verify(passwordChecker).encode(passwordCaptor.capture());
+        verify(passwordEncoder).encode(passwordCaptor.capture());
         PlainPassword capturedPassword = passwordCaptor.getValue();
         assertThat(capturedPassword.getValue()).isEqualTo(ACCOUNT_PASSWORD);
     }

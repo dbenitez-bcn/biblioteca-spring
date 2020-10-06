@@ -14,14 +14,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountService {
     private final AccountRepository accountRepository;
-    private final PasswordChecker passwordChecker;
+    private final PasswordEncoder passwordEncoder;
 
     public void register(String email, String password) {
         Optional<Account> accountMaybe = accountRepository.getByEmail(new AccountEmail(email));
         accountMaybe.ifPresent((account) -> {
             throw new EmailAlreadyInUse();
         });
-        String hashedPassword = passwordChecker.encode(new PlainPassword(password));
+        String hashedPassword = passwordEncoder.encode(new PlainPassword(password));
         Account account = new Account(email, hashedPassword);
         accountRepository.create(account);
     }

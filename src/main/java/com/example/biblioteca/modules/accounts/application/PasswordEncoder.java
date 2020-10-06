@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-class PasswordChecker {
+class PasswordEncoder {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
