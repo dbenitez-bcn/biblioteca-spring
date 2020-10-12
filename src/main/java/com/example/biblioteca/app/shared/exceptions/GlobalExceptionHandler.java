@@ -6,6 +6,7 @@ import com.example.biblioteca.modules.accounts.domain.exceptions.InvalidPassword
 import com.example.biblioteca.modules.accounts.domain.exceptions.LoginFailed;
 import com.example.biblioteca.modules.multimedia.movies.domain.exceptions.InvalidNameForMovie;
 import com.example.biblioteca.modules.multimedia.movies.domain.exceptions.InvalidYearForMovie;
+import com.example.biblioteca.modules.rentals.domain.exceptions.MovieAlreadyRented;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -45,6 +46,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(LoginFailed.class)
     public ResponseEntity<ErrorDetails> loginFailed() {
         ErrorDetails errorDetails = new ErrorDetails("Invalid email or password");
+        return ResponseEntity.status(403).body(errorDetails);
+    }
+
+    @ExceptionHandler(MovieAlreadyRented.class)
+    public ResponseEntity<ErrorDetails> movieAlreadyRented() {
+        ErrorDetails errorDetails = new ErrorDetails("Movie is already rented");
         return ResponseEntity.status(403).body(errorDetails);
     }
 }

@@ -1,10 +1,10 @@
 package com.example.biblioteca.app.shared.exceptions;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.example.biblioteca.modules.accounts.domain.exceptions.InvalidPasswordFormat;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class GlobalExceptionHandlerTest {
 
@@ -58,5 +58,13 @@ class GlobalExceptionHandlerTest {
 
         assertThat(result.getStatusCodeValue()).isEqualTo(403);
         assertThat(result.getBody().message).isEqualTo("Invalid email or password");
+    }
+
+    @Test
+    void movieAlreadyRented_shouldHandleMovieAlreadyRented() {
+        ResponseEntity<ErrorDetails> result = sut.movieAlreadyRented();
+
+        assertThat(result.getStatusCodeValue()).isEqualTo(403);
+        assertThat(result.getBody().message).isEqualTo("Movie is already rented");
     }
 }
