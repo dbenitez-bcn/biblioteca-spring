@@ -1,19 +1,5 @@
 package com.example.biblioteca.modules.accounts.application;
 
-import static com.example.biblioteca.modules.accounts.domain.fixtures.AccountFixture.ACCOUNT_EMAIL;
-import static com.example.biblioteca.modules.accounts.domain.fixtures.AccountFixture.ACCOUNT_PASSWORD;
-import static com.example.biblioteca.modules.accounts.domain.fixtures.AccountFixture.ENCODED_PASSWORD;
-import static com.example.biblioteca.modules.accounts.domain.fixtures.AccountFixture.customAccount;
-import static com.example.biblioteca.modules.accounts.domain.fixtures.AccountFixture.defaultAccount;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.example.biblioteca.modules.accounts.domain.aggregates.Account;
 import com.example.biblioteca.modules.accounts.domain.exceptions.EmailAlreadyInUse;
 import com.example.biblioteca.modules.accounts.domain.exceptions.InvalidEmailAddress;
@@ -23,16 +9,24 @@ import com.example.biblioteca.modules.accounts.domain.valueObjects.AccountEmail;
 import com.example.biblioteca.modules.accounts.domain.valueObjects.HashedPassword;
 import com.example.biblioteca.modules.accounts.domain.valueObjects.PlainPassword;
 import com.example.biblioteca.modules.accounts.repositories.AccountRepository;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import java.util.Optional;
+
+import static com.example.biblioteca.modules.accounts.domain.fixtures.AccountFixture.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 class AccountServiceTest {
 
@@ -42,8 +36,6 @@ class AccountServiceTest {
     private AccountRepository accountRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
-    @Mock(answer = Answers.CALLS_REAL_METHODS)
-    private JWT jwt;
 
     @InjectMocks
     private AccountService sut;
@@ -68,9 +60,9 @@ class AccountServiceTest {
         verify(accountRepository).create(accountCaptor.capture());
         Account capturedAccount = accountCaptor.getValue();
         assertThat(capturedAccount.getEmail()
-                                  .getValue()).isEqualTo(ACCOUNT_EMAIL);
+                .getValue()).isEqualTo(ACCOUNT_EMAIL);
         assertThat(capturedAccount.getPassword()
-                                  .getValue()).isEqualTo(ENCODED_PASSWORD);
+                .getValue()).isEqualTo(ENCODED_PASSWORD);
     }
 
     @Test
@@ -88,28 +80,28 @@ class AccountServiceTest {
     @ValueSource(strings = {"", "  ", "invalid#email.com", "invalid.com", "email@example.c"})
     void register_whenInvalidEmailIsIntroduced_shouldThrowInvalidEmailAddress(String email) {
         assertThatThrownBy(() -> sut.register(email, ACCOUNT_PASSWORD))
-            .isInstanceOf(InvalidEmailAddress.class);
+                .isInstanceOf(InvalidEmailAddress.class);
     }
 
     @Test
     void register_whenNodEmailIsIntroduced_shouldThrowInvalidEmailAddress() {
         assertThatThrownBy(() -> sut.register(null, ACCOUNT_PASSWORD))
-            .isInstanceOf(InvalidEmailAddress.class);
+                .isInstanceOf(InvalidEmailAddress.class);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"", "  ", "password", "1234", "pass123"})
     void register_whenInvalidPasswordIsIntroduced_shouldThrowInvalidPasswordFormat(String password) {
         assertThatThrownBy(() -> sut.register(ACCOUNT_EMAIL, password))
-            .isInstanceOf(InvalidPasswordFormat.class)
-            .hasMessage("Should have at least 8 characters and contain numbers and letters");
+                .isInstanceOf(InvalidPasswordFormat.class)
+                .hasMessage("Should have at least 8 characters and contain numbers and letters");
     }
 
     @Test
     void register_whenNoPasswordIsIntroduced_shouldThrowInvalidPasswordFormat() {
         assertThatThrownBy(() -> sut.register(ACCOUNT_EMAIL, null))
-            .isInstanceOf(InvalidPasswordFormat.class)
-            .hasMessage("Should have at least 8 characters and contain numbers and letters");
+                .isInstanceOf(InvalidPasswordFormat.class)
+                .hasMessage("Should have at least 8 characters and contain numbers and letters");
     }
 
     @Test
@@ -117,7 +109,7 @@ class AccountServiceTest {
         willFindAnAccount(defaultAccount());
 
         assertThatThrownBy(() -> sut.register(ACCOUNT_EMAIL, ACCOUNT_PASSWORD))
-            .isInstanceOf(EmailAlreadyInUse.class);
+                .isInstanceOf(EmailAlreadyInUse.class);
 
         verify(accountRepository).getByEmail(new AccountEmail(ACCOUNT_EMAIL));
     }
@@ -127,27 +119,20 @@ class AccountServiceTest {
         willFindAnAccount(ACCOUNT);
         passwordMatch();
 
-        sut.login(ACCOUNT_EMAIL, ACCOUNT_PASSWORD);
+        Account result = sut.login(ACCOUNT_EMAIL, ACCOUNT_PASSWORD);
 
         verify(accountRepository).getByEmail(new AccountEmail(ACCOUNT_EMAIL));
-        verify(passwordEncoder).matches(new PlainPassword(ACCOUNT.getPassword()
-                                                                 .getValue()), ACCOUNT.getPassword());
+        verify(passwordEncoder).matches(new PlainPassword(ACCOUNT.getPassword().getValue()), ACCOUNT.getPassword());
     }
 
     @Test
-    void login_whenCredentialsAreCorrect_shouldGenerateAToken() {
+    void login_whenCredentialsAreCorrect_shouldReturnTheAccount() {
         willFindAnAccount(ACCOUNT);
         passwordMatch();
-        String expectedToken = jwt.create()
-                                  .withSubject(ACCOUNT.getId()
-                                                      .toString())
-                                  .withClaim("email", ACCOUNT.getEmail()
-                                                             .getValue())
-                                  .sign(Algorithm.HMAC512("MY_SECRET"));
 
-        String result = sut.login(ACCOUNT_EMAIL, ACCOUNT_PASSWORD);
+        Account result = sut.login(ACCOUNT_EMAIL, ACCOUNT_PASSWORD);
 
-        assertThat(result).isEqualTo(expectedToken);
+        assertThat(result).isEqualTo(ACCOUNT);
     }
 
     @Test
@@ -155,7 +140,7 @@ class AccountServiceTest {
         willFindNoAccount();
 
         assertThatThrownBy(() -> sut.login(ACCOUNT_EMAIL, ACCOUNT_PASSWORD))
-            .isInstanceOf(LoginFailed.class);
+                .isInstanceOf(LoginFailed.class);
     }
 
     @Test
@@ -164,7 +149,7 @@ class AccountServiceTest {
         passwordsWillNotMatch();
 
         assertThatThrownBy(() -> sut.login(ACCOUNT_EMAIL, ACCOUNT_PASSWORD))
-            .isInstanceOf(LoginFailed.class);
+                .isInstanceOf(LoginFailed.class);
     }
 
     private void willFindAnAccount(Account account) {
