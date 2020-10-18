@@ -26,7 +26,7 @@ public class AccountController {
     @GetMapping("/v1/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
         Account account = accountService.login(request.email, request.password);
-        String token = jwtUtils.generateToken(account.getId().toString());
+        String token = jwtUtils.generateToken(account.getEmail().toString());
         return new LoginResponse(token);
     }
 }

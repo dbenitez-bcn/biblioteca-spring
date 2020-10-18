@@ -44,7 +44,7 @@ class AccountControllerTest {
     void login_shouldLoginAnAccount() {
         String aToken = "A_TOKEN";
         Account account = defaultAccount();
-        when(jwtUtils.generateToken(account.getId().toString())).thenReturn(aToken);
+        when(jwtUtils.generateToken(account.getEmail().toString())).thenReturn(aToken);
         when(accountService.login(ACCOUNT_EMAIL, ACCOUNT_PASSWORD)).thenReturn(account);
 
         LoginResponse result = sut.login(new LoginRequest(ACCOUNT_EMAIL, ACCOUNT_PASSWORD));
