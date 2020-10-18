@@ -16,14 +16,14 @@ import java.util.Optional;
 public class AccountService {
 
     private final AccountRepository accountRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordManager passwordManager;
 
     public void register(String email, String password) {
         Optional<Account> accountMaybe = accountRepository.getByEmail(new AccountEmail(email));
         accountMaybe.ifPresent((account) -> {
             throw new EmailAlreadyInUse();
         });
-        String hashedPassword = passwordEncoder.encode(new PlainPassword(password));
+        String hashedPassword = passwordManager.encode(new PlainPassword(password));
         Account account = new Account(email, hashedPassword);
         accountRepository.create(account);
     }
@@ -32,7 +32,7 @@ public class AccountService {
         Optional<Account> accountMaybe = accountRepository.getByEmail(new AccountEmail(email));
         if (accountMaybe.isPresent()) {
             Account account = accountMaybe.get();
-            boolean passwordMatches = passwordEncoder
+            boolean passwordMatches = passwordManager
                     .matches(
                             new PlainPassword(password),
                             account.getPassword()

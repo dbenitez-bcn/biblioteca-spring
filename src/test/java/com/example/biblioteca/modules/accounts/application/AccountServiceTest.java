@@ -35,7 +35,7 @@ class AccountServiceTest {
     @Mock
     private AccountRepository accountRepository;
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private PasswordManager passwordManager;
 
     @InjectMocks
     private AccountService sut;
@@ -53,7 +53,7 @@ class AccountServiceTest {
 
     @Test
     void register_shouldCreateANewUser() {
-        when(passwordEncoder.encode(any(PlainPassword.class))).thenReturn(ENCODED_PASSWORD);
+        when(passwordManager.encode(any(PlainPassword.class))).thenReturn(ENCODED_PASSWORD);
 
         sut.register(ACCOUNT_EMAIL, ACCOUNT_PASSWORD);
 
@@ -67,11 +67,11 @@ class AccountServiceTest {
 
     @Test
     void register_shouldEncodeThePassword() {
-        when(passwordEncoder.encode(any(PlainPassword.class))).thenReturn(ENCODED_PASSWORD);
+        when(passwordManager.encode(any(PlainPassword.class))).thenReturn(ENCODED_PASSWORD);
 
         sut.register(ACCOUNT_EMAIL, ACCOUNT_PASSWORD);
 
-        verify(passwordEncoder).encode(passwordCaptor.capture());
+        verify(passwordManager).encode(passwordCaptor.capture());
         PlainPassword capturedPassword = passwordCaptor.getValue();
         assertThat(capturedPassword.getValue()).isEqualTo(ACCOUNT_PASSWORD);
     }
@@ -122,7 +122,7 @@ class AccountServiceTest {
         Account result = sut.login(ACCOUNT_EMAIL, ACCOUNT_PASSWORD);
 
         verify(accountRepository).getByEmail(new AccountEmail(ACCOUNT_EMAIL));
-        verify(passwordEncoder).matches(new PlainPassword(ACCOUNT.getPassword().getValue()), ACCOUNT.getPassword());
+        verify(passwordManager).matches(new PlainPassword(ACCOUNT.getPassword().getValue()), ACCOUNT.getPassword());
     }
 
     @Test
@@ -161,10 +161,10 @@ class AccountServiceTest {
     }
 
     private void passwordMatch() {
-        when(passwordEncoder.matches(any(PlainPassword.class), any(HashedPassword.class))).thenReturn(true);
+        when(passwordManager.matches(any(PlainPassword.class), any(HashedPassword.class))).thenReturn(true);
     }
 
     private void passwordsWillNotMatch() {
-        when(passwordEncoder.matches(any(PlainPassword.class), any(HashedPassword.class))).thenReturn(false);
+        when(passwordManager.matches(any(PlainPassword.class), any(HashedPassword.class))).thenReturn(false);
     }
 }

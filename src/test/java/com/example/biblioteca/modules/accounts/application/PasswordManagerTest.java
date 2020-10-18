@@ -16,12 +16,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-class PasswordEncoderTest {
+class PasswordManagerTest {
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @InjectMocks
-    private PasswordEncoder sut;
+    private PasswordManager sut;
 
     @BeforeEach
     void setUp() {
