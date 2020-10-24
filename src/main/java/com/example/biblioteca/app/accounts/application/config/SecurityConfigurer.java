@@ -1,5 +1,6 @@
 package com.example.biblioteca.app.accounts.application.config;
 
+import com.example.biblioteca.app.accounts.application.filters.AuthenticationFilter;
 import com.example.biblioteca.app.accounts.application.filters.TokenValidationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,15 +13,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     private final TokenValidationFilter tokenValidationFilter;
+    private final AuthenticationFilter authenticationFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(tokenValidationFilter, AuthenticationFilter.class)
                 .authorizeRequests().antMatchers("/v1/login", "/v1/register").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.addFilterBefore(tokenValidationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
