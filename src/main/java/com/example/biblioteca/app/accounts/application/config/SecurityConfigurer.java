@@ -1,6 +1,6 @@
 package com.example.biblioteca.app.accounts.application.config;
 
-import com.example.biblioteca.app.accounts.application.filters.JwtFilter;
+import com.example.biblioteca.app.accounts.application.filters.TokenValidationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -11,7 +11,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
-    private final JwtFilter jwtFilter;
+    private final TokenValidationFilter tokenValidationFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -21,6 +21,6 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(tokenValidationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

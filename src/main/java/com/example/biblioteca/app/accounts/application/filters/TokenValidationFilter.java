@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 @Component
 @RequiredArgsConstructor
-public class JwtFilter extends OncePerRequestFilter {
+public class TokenValidationFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
 
     @Override
