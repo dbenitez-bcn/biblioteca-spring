@@ -3,7 +3,6 @@ package com.example.biblioteca.app.accounts.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -16,7 +15,7 @@ public class JwtUtils {
 
     private final String SECRET_KEY = "MY_SECRET";
 
-    public String extractUsername(String token) {
+    public String extractSubject(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -48,8 +47,11 @@ public class JwtUtils {
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public Boolean validateToken(String token) {
+        return (isTokenSigned(token) && !isTokenExpired(token));
+    }
+
+    private boolean isTokenSigned(String token) {
+        return Jwts.parser().isSigned(token);
     }
 }
