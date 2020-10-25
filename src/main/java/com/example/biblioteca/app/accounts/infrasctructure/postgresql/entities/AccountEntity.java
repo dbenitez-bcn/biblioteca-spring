@@ -23,4 +23,5 @@ public class AccountEntity {
     @Column(unique = true)
     private String email;
     private String password;
+    private String role;
 }

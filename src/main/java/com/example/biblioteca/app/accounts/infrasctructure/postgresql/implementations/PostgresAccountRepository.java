@@ -19,7 +19,8 @@ public class PostgresAccountRepository implements AccountRepository {
         AccountEntity accountEntity = new AccountEntity(
                 account.getId(),
                 account.getEmail().getValue(),
-                account.getPassword().getValue()
+                account.getPassword().getValue(),
+                account.getRole().name()
         );
         accountRepositoryJPA.save(accountEntity);
     }
@@ -30,7 +31,8 @@ public class PostgresAccountRepository implements AccountRepository {
         Optional<Account> account = accountMaybe.map(accountEntity -> new Account(
                 accountMaybe.get().getId(),
                 accountMaybe.get().getEmail(),
-                accountMaybe.get().getPassword()
+                accountMaybe.get().getPassword(),
+                accountMaybe.get().getRole()
         ));
 
         return account;
