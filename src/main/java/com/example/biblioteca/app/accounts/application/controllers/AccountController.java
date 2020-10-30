@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+
 @RequiredArgsConstructor
 @RestController
 public class AccountController {
@@ -26,7 +28,10 @@ public class AccountController {
     @GetMapping("/v1/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
         Account account = accountService.login(request.email, request.password);
-        String token = jwtUtils.generateToken(account.getEmail().getValue());
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("role", account.getRole().name());
+        String token = jwtUtils.generateToken(account.getEmail().getValue(), claims);
+
         return new LoginResponse(token);
     }
 }

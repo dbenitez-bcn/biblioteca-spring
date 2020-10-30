@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.HashMap;
+
 import static com.example.biblioteca.modules.accounts.domain.fixtures.AccountFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -44,7 +46,9 @@ class AccountControllerTest {
     void login_shouldLoginAnAccount() {
         String aToken = "A_TOKEN";
         Account account = defaultAccount();
-        when(jwtUtils.generateToken(account.getEmail().getValue())).thenReturn(aToken);
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("role", account.getRole().name());
+        when(jwtUtils.generateToken(account.getEmail().getValue(), claims)).thenReturn(aToken);
         when(accountService.login(ACCOUNT_EMAIL, ACCOUNT_PASSWORD)).thenReturn(account);
 
         LoginResponse result = sut.login(new LoginRequest(ACCOUNT_EMAIL, ACCOUNT_PASSWORD));
