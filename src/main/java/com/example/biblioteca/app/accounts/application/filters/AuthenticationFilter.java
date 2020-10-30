@@ -3,6 +3,8 @@ package com.example.biblioteca.app.accounts.application.filters;
 import com.example.biblioteca.app.accounts.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -25,9 +27,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         final String token = (String) request.getAttribute("AuthorizationToken");
         if (token != null) {
             final String subject = jwtUtils.extractSubject(token);
+            final String role = jwtUtils.extractRole(token);
 
             if (subject != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UsernamePasswordAuthenticationToken auth = buildAuthForSubject(subject);
+                UsernamePasswordAuthenticationToken auth = buildAuthForSubject(subject, role);
                 auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
@@ -36,7 +39,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private UsernamePasswordAuthenticationToken buildAuthForSubject(String subject) {
-        return new UsernamePasswordAuthenticationToken(subject, null, new ArrayList<>());
+    private UsernamePasswordAuthenticationToken buildAuthForSubject(String subject, String role) {
+        ArrayList<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role));
+        return new UsernamePasswordAuthenticationToken(subject, null, authorities);
     }
 }

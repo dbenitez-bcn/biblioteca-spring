@@ -3,6 +3,7 @@ package com.example.biblioteca.app.accounts.application.config;
 import com.example.biblioteca.app.accounts.application.filters.AuthenticationFilter;
 import com.example.biblioteca.app.accounts.application.filters.TokenValidationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,7 +21,10 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(tokenValidationFilter, AuthenticationFilter.class)
-                .authorizeRequests().antMatchers("/v1/login", "/v1/register").permitAll()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/v1/movie/**").hasAnyAuthority("USER", "ADMIN")
+                .antMatchers("/v1/movie/**").hasAuthority("ADMIN")
+                .antMatchers("/v1/login", "/v1/register").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
