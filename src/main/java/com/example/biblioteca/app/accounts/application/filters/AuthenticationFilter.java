@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -42,6 +43,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     private UsernamePasswordAuthenticationToken buildAuthForSubject(String subject, String role) {
         ArrayList<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(role));
-        return new UsernamePasswordAuthenticationToken(subject, null, authorities);
+        return new UsernamePasswordAuthenticationToken(UUID.fromString(subject), null, authorities);
     }
 }
