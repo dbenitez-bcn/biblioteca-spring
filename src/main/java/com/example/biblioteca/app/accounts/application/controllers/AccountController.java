@@ -30,7 +30,7 @@ public class AccountController {
         Account account = accountService.login(request.email, request.password);
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("role", account.getRole().name());
-        String token = jwtUtils.generateToken(account.getEmail().getValue(), claims);
+        String token = jwtUtils.generateToken(account.getId().toString(), claims);
 
         return new LoginResponse(token);
     }

@@ -18,7 +18,10 @@ public class Account {
     private AccountRole role;
 
     public Account(String email, String password) {
-        this(UUID.randomUUID(), email, password, AccountRole.USER.name());
+        this.id = UUID.randomUUID();
+        this.email = new AccountEmail(email);
+        this.password = new HashedPassword(password);
+        this.role = AccountRole.USER;
     }
 
     public Account(UUID id, String email, String password, String role) {
