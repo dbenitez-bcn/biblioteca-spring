@@ -15,6 +15,7 @@ import org.mockito.Mock;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.example.biblioteca.modules.multimedia.movies.domain.fixtures.MovieFixture.*;
 import static java.util.Arrays.asList;
@@ -99,27 +100,27 @@ class MovieServiceTest {
 
     @Test
     void getMovieById_whenFindsOneResult_shouldReturnAMovie() {
-        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.of(A_MOVIE));
+        willFindAMovie(A_MOVIE);
 
-        Optional<Movie> movieMaybe = sut.getMovieById(MOVIE_ID);
+        Optional<Movie> result = sut.getMovieById(MOVIE_ID);
 
         verify(movieRepository).getOneById(MOVIE_ID);
-        assertThat(A_MOVIE).isEqualTo(movieMaybe.get());
+        assertThat(result).contains(A_MOVIE);
     }
 
     @Test
     void getMovieById_whenDoNotFindsOneResult_shouldReturnAnEmptyOptional() {
-        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.empty());
+        willFindNoMovie();
 
-        Optional<Movie> movieMaybe = sut.getMovieById(MOVIE_ID);
+        Optional<Movie> result = sut.getMovieById(MOVIE_ID);
 
         verify(movieRepository).getOneById(MOVIE_ID);
-        assertThat(movieMaybe.isPresent()).isFalse();
+        assertThat(result).isEmpty();
     }
 
     @Test
     void deleteMovie_whenMovieIsFound_shouldDeleteTheMovie() {
-        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.of(A_MOVIE));
+        willFindAMovie(A_MOVIE);
 
         sut.deleteMovie(MOVIE_ID);
 
@@ -128,7 +129,7 @@ class MovieServiceTest {
 
     @Test
     void deleteMovie_whenMovieIsNotFound_shouldDoNothing() {
-        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.empty());
+        willFindNoMovie();
 
         sut.deleteMovie(MOVIE_ID);
 
@@ -139,7 +140,7 @@ class MovieServiceTest {
     void updateMovie_whenMovieExist_shouldUpdateAMovie() {
         Movie movieToUpdate = customMovie(MOVIE_ID, "wrong name", 2000);
         Movie expectedMovieSaved = customMovie(MOVIE_ID, A_MOVIE_NAME, A_MOVIE_YEAR);
-        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.of(movieToUpdate));
+        willFindAMovie(movieToUpdate);
 
         sut.updateMovie(MOVIE_ID, A_MOVIE_NAME, A_MOVIE_YEAR);
 
@@ -149,7 +150,7 @@ class MovieServiceTest {
 
     @Test
     void updateMovie_whenMovieDoesNotExist_shouldNotUpdateAMovie() {
-        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.empty());
+        willFindNoMovie();
 
         sut.updateMovie(MOVIE_ID, A_MOVIE_NAME, A_MOVIE_YEAR);
 
@@ -158,7 +159,7 @@ class MovieServiceTest {
 
     @Test
     void updateMovie_givenANullName_shouldThrowInvalidNameForMovie() {
-        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.of(A_MOVIE));
+        willFindAMovie(A_MOVIE);
 
         assertThatThrownBy(() -> sut.updateMovie(MOVIE_ID, null, A_MOVIE_YEAR))
                 .isInstanceOf(InvalidNameForMovie.class);
@@ -166,7 +167,7 @@ class MovieServiceTest {
 
     @Test
     void updateMovie_givenABlankName_shouldThrowInvalidNameForMovie() {
-        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.of(A_MOVIE));
+        willFindAMovie(A_MOVIE);
 
         assertThatThrownBy(() -> sut.updateMovie(MOVIE_ID, "  ", A_MOVIE_YEAR))
                 .isInstanceOf(InvalidNameForMovie.class);
@@ -174,9 +175,17 @@ class MovieServiceTest {
 
     @Test
     void updateMovie_givenAYearSmallerThat1888_shouldThrowInvalidYearForMovie() {
-        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.of(A_MOVIE));
+        willFindAMovie(A_MOVIE);
 
         assertThatThrownBy(() -> sut.updateMovie(MOVIE_ID, A_MOVIE_NAME, 1887))
                 .isInstanceOf(InvalidYearForMovie.class);
+    }
+
+    private void willFindAMovie(Movie movie) {
+        when(movieRepository.getOneById(movie.getId())).thenReturn(Optional.of(movie));
+    }
+
+    private void willFindNoMovie() {
+        when(movieRepository.getOneById(any(UUID.class))).thenReturn(Optional.empty());
     }
 }
