@@ -4,9 +4,10 @@ import com.example.biblioteca.app.rentals.infrastructure.postgresql.entities.Ren
 import com.example.biblioteca.modules.rentals.domain.aggregates.Rental;
 import com.example.biblioteca.modules.rentals.domain.valueObjects.MovieId;
 import com.example.biblioteca.modules.rentals.repositories.RentalRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -15,7 +16,7 @@ public class PostgresRentalRepository implements RentalRepository {
     private final RentalRepositoryJPA repositoryJPA;
 
     @Override
-    public void rent(Rental rental) {
+    public void save(Rental rental) {
         RentalEntity rentalToSave = new RentalEntity(
             rental.getMovieId()
                   .getValue(),
@@ -31,5 +32,10 @@ public class PostgresRentalRepository implements RentalRepository {
         return rentalMaybe.map(
             rentalEntity -> new Rental(rentalEntity.getMovieId(), rentalEntity.getUserId())
         );
+    }
+
+    @Override
+    public void removeByMovie(MovieId movieId) {
+        repositoryJPA.deleteById(movieId.getValue());
     }
 }

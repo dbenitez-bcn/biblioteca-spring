@@ -21,6 +21,9 @@ class RentalsControllerTest {
 
     @InjectMocks
     private RentalsController sut;
+    public static final UUID MOVIE_ID = UUID.randomUUID();
+    public static final UUID USER_ID = UUID.randomUUID();
+    public static final UsernamePasswordAuthenticationToken AUTH = new UsernamePasswordAuthenticationToken(USER_ID, null, null);
 
     @BeforeEach
     void setUp() {
@@ -29,13 +32,17 @@ class RentalsControllerTest {
 
     @Test
     void rent_shouldRentAMovie() {
-        UUID movieId = UUID.randomUUID();
-        UUID userId = UUID.randomUUID();
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userId, null, null);
+        ResponseEntity<Object> result = sut.rent(AUTH, MOVIE_ID);
 
-        ResponseEntity result = sut.rent(auth, movieId);
+        verify(rentalsService).rent(MOVIE_ID, USER_ID);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 
-        verify(rentalsService).rent(movieId, userId);
+    @Test
+    void checkout_shouldCheckoutTheMovie() {
+        ResponseEntity<Object> result = sut.checkout(AUTH, MOVIE_ID);
+
+        verify(rentalsService).checkout(MOVIE_ID, USER_ID);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }

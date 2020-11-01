@@ -1,12 +1,15 @@
 package com.example.biblioteca.modules.rentals.application;
 
 import com.example.biblioteca.modules.rentals.domain.aggregates.Rental;
+import com.example.biblioteca.modules.rentals.domain.exceptions.CheckoutNotAllowed;
 import com.example.biblioteca.modules.rentals.domain.exceptions.MovieAlreadyRented;
+import com.example.biblioteca.modules.rentals.domain.valueObjects.MovieId;
 import com.example.biblioteca.modules.rentals.repositories.RentalRepository;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +23,16 @@ public class RentalsService {
         if (rentalMaybe.isPresent()) {
             throw new MovieAlreadyRented();
         }
-        repository.rent(rental);
+        repository.save(rental);
+    }
+
+    public void checkout(UUID movieId, UUID userId) {
+        Optional<Rental> rentalMaybe = repository.findByMovie(new MovieId(movieId));
+        rentalMaybe.ifPresent(rental -> {
+            if (!rental.isRentedBy(userId)) {
+                throw new CheckoutNotAllowed();
+            }
+            repository.removeByMovie(rental.getMovieId());
+        });
     }
 }

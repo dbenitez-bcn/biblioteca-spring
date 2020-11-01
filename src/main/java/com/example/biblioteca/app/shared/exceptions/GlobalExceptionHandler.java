@@ -6,6 +6,7 @@ import com.example.biblioteca.modules.accounts.domain.exceptions.InvalidPassword
 import com.example.biblioteca.modules.accounts.domain.exceptions.LoginFailed;
 import com.example.biblioteca.modules.multimedia.movies.domain.exceptions.InvalidNameForMovie;
 import com.example.biblioteca.modules.multimedia.movies.domain.exceptions.InvalidYearForMovie;
+import com.example.biblioteca.modules.rentals.domain.exceptions.CheckoutNotAllowed;
 import com.example.biblioteca.modules.rentals.domain.exceptions.MovieAlreadyRented;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -52,6 +53,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MovieAlreadyRented.class)
     public ResponseEntity<ErrorDetails> movieAlreadyRented() {
         ErrorDetails errorDetails = new ErrorDetails("Movie is already rented");
+        return ResponseEntity.status(403).body(errorDetails);
+    }
+
+    @ExceptionHandler(CheckoutNotAllowed.class)
+    public ResponseEntity<ErrorDetails> checkoutNotAllowed() {
+        ErrorDetails errorDetails = new ErrorDetails("This movie is not rented by you");
         return ResponseEntity.status(403).body(errorDetails);
     }
 }
