@@ -2,6 +2,8 @@ package com.example.biblioteca.modules.multimedia.movies.application;
 
 import com.example.biblioteca.modules.multimedia.movies.domain.aggregates.Movie;
 import com.example.biblioteca.modules.multimedia.movies.repositories.MovieRepository;
+import com.example.biblioteca.modules.shared.events.EventBus;
+import com.example.biblioteca.modules.shared.events.MovieCreatedEvent;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,14 @@ import java.util.UUID;
 public class MovieService {
     @Qualifier("postgres")
     private final MovieRepository repository;
+    private final EventBus eventBus;
 
-    public void createMovie(String movieName, int releaseYear) {
+    public UUID createMovie(String movieName, int releaseYear) {
         Movie movie = new Movie(movieName, releaseYear);
         repository.upsert(movie);
+        MovieCreatedEvent event = new MovieCreatedEvent(movie.getId(), movieName, releaseYear);
+        eventBus.publish(event);
+        return movie.getId();
     }
 
     public List<Movie> getAllMovies() {
