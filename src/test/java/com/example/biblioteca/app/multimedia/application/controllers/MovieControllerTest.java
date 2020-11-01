@@ -1,6 +1,7 @@
 package com.example.biblioteca.app.multimedia.application.controllers;
 
 import com.example.biblioteca.app.multimedia.application.requests.MovieRequestVM;
+import com.example.biblioteca.app.multimedia.application.responses.MovieCreatedResponse;
 import com.example.biblioteca.app.multimedia.application.responses.MovieResponseVM;
 import com.example.biblioteca.modules.multimedia.movies.application.MovieService;
 import com.example.biblioteca.modules.multimedia.movies.domain.aggregates.Movie;
@@ -17,6 +18,7 @@ import java.util.Optional;
 import static com.example.biblioteca.modules.multimedia.movies.domain.fixtures.MovieFixture.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,10 +46,12 @@ class MovieControllerTest {
 
     @Test
     void createMovie_shouldCreateAMovie() {
+        when(movieService.createMovie(A_MOVIE_NAME, A_MOVIE_YEAR)).thenReturn(MOVIE_ID);
         ResponseEntity result = sut.createMovie(A_MOVIE_REQUEST);
 
-        verify(movieService).createMovie(A_MOVIE_NAME, A_MOVIE_YEAR);
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
+        MovieCreatedResponse expectedResponse = new MovieCreatedResponse(MOVIE_ID);
+        assertThat(result.getBody()).isEqualTo(expectedResponse);
     }
 
     @Test

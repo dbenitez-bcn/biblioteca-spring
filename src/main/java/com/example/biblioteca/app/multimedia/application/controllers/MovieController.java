@@ -1,6 +1,7 @@
 package com.example.biblioteca.app.multimedia.application.controllers;
 
 import com.example.biblioteca.app.multimedia.application.requests.MovieRequestVM;
+import com.example.biblioteca.app.multimedia.application.responses.MovieCreatedResponse;
 import com.example.biblioteca.app.multimedia.application.responses.MovieResponseVM;
 import com.example.biblioteca.modules.multimedia.movies.application.MovieService;
 import com.example.biblioteca.modules.multimedia.movies.domain.aggregates.Movie;
@@ -23,8 +24,11 @@ public class MovieController {
 
     @PostMapping
     public ResponseEntity createMovie(@RequestBody MovieRequestVM requestVM) {
-        service.createMovie(requestVM.name, requestVM.year);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        UUID movieId = service.createMovie(requestVM.name, requestVM.year);
+        MovieCreatedResponse response = new MovieCreatedResponse(movieId);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
     }
 
     @GetMapping
