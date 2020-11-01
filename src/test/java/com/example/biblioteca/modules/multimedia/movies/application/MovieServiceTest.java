@@ -118,10 +118,21 @@ class MovieServiceTest {
     }
 
     @Test
-    void deleteMovie_shouldDeleteTheMovie() {
+    void deleteMovie_whenMovieIsFound_shouldDeleteTheMovie() {
+        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.of(A_MOVIE));
+
         sut.deleteMovie(MOVIE_ID);
 
         verify(movieRepository).delete(MOVIE_ID);
+    }
+
+    @Test
+    void deleteMovie_whenMovieIsNotFound_shouldDoNothing() {
+        when(movieRepository.getOneById(MOVIE_ID)).thenReturn(Optional.empty());
+
+        sut.deleteMovie(MOVIE_ID);
+
+        verify(movieRepository, never()).delete(MOVIE_ID);
     }
 
     @Test

@@ -30,7 +30,9 @@ public class MovieService {
     }
 
     public void deleteMovie(UUID id) {
-        repository.delete(id);
+        repository
+                .getOneById(id)
+                .ifPresent(movie -> repository.delete(id));
     }
 
     public void updateMovie(UUID id, String name, int year) {
