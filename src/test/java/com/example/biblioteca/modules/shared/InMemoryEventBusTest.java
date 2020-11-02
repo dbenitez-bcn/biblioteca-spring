@@ -1,16 +1,14 @@
 package com.example.biblioteca.modules.shared;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.MockitoAnnotations.initMocks;
-
 import com.example.biblioteca.modules.shared.events.Event;
 import com.example.biblioteca.modules.shared.events.InMemoryEventBus;
 import com.example.biblioteca.modules.shared.events.Subscriber;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 class InMemoryEventBusTest {
 
@@ -28,7 +26,7 @@ class InMemoryEventBusTest {
     @BeforeEach
     void setUp() {
         initMocks(this);
-        sut = new InMemoryEventBus();
+        sut = new InMemoryEventBus(null);
     }
 
     @Test
