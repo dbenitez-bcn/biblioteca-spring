@@ -8,6 +8,7 @@ import com.example.biblioteca.modules.multimedia.movies.domain.exceptions.Invali
 import com.example.biblioteca.modules.multimedia.movies.domain.exceptions.InvalidYearForMovie;
 import com.example.biblioteca.modules.rentals.domain.exceptions.CheckoutNotAllowed;
 import com.example.biblioteca.modules.rentals.domain.exceptions.MovieAlreadyRented;
+import com.example.biblioteca.modules.rentals.domain.exceptions.MovieNotFound;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -60,5 +61,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDetails> checkoutNotAllowed() {
         ErrorDetails errorDetails = new ErrorDetails("This movie is not rented by you");
         return ResponseEntity.status(403).body(errorDetails);
+    }
+    @ExceptionHandler(MovieNotFound.class)
+    public ResponseEntity<ErrorDetails> movieNotFound() {
+        ErrorDetails errorDetails = new ErrorDetails("This movie is not in biblioteca");
+        return ResponseEntity.status(404).body(errorDetails);
     }
 }

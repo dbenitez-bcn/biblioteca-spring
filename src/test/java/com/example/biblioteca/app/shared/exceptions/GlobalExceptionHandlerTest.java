@@ -75,4 +75,12 @@ class GlobalExceptionHandlerTest {
         assertThat(result.getStatusCodeValue()).isEqualTo(403);
         assertThat(result.getBody().message).isEqualTo("This movie is not rented by you");
     }
+
+    @Test
+    void movieNotFound_shouldMovieNotFound() {
+        ResponseEntity<ErrorDetails> result = sut.movieNotFound();
+
+        assertThat(result.getStatusCodeValue()).isEqualTo(404);
+        assertThat(result.getBody().message).isEqualTo("This movie is not in biblioteca");
+    }
 }
