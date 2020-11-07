@@ -1,7 +1,9 @@
 package com.example.biblioteca.app.rentals.infrastructure.postgresql.implementations;
 
+import com.example.biblioteca.app.rentals.infrastructure.postgresql.entities.MovieEntity;
 import com.example.biblioteca.app.rentals.infrastructure.postgresql.entities.RentalEntity;
 import com.example.biblioteca.modules.rentals.domain.aggregates.Rental;
+import com.example.biblioteca.modules.rentals.domain.exceptions.MovieNotFound;
 import com.example.biblioteca.modules.rentals.domain.valueObjects.MovieId;
 import com.example.biblioteca.modules.rentals.repositories.RentalRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,22 +15,26 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PostgresRentalRepository implements RentalRepository {
 
-    private final RentalRepositoryJPA repositoryJPA;
+    private final RentalRepositoryJPA rentalRepositoryJPA;
+    private final MovieRepositoryJPA movieRepositoryJPA;
 
     @Override
     public void save(Rental rental) {
+        Optional<MovieEntity> movie = movieRepositoryJPA.findById(rental.getMovieId().getValue());
+        if (!movie.isPresent()) {
+            throw new MovieNotFound();
+        }
         RentalEntity rentalToSave = new RentalEntity(
-            rental.getMovieId()
-                  .getValue(),
-            rental.getUserId()
-                  .getValue()
+            rental.getMovieId().getValue(),
+            rental.getUserId().getValue(),
+                movie.get()
         );
-        repositoryJPA.save(rentalToSave);
+        rentalRepositoryJPA.save(rentalToSave);
     }
 
     @Override
     public Optional<Rental> findByMovie(MovieId movieId) {
-        Optional<RentalEntity> rentalMaybe = repositoryJPA.findById(movieId.getValue());
+        Optional<RentalEntity> rentalMaybe = rentalRepositoryJPA.findById(movieId.getValue());
         return rentalMaybe.map(
             rentalEntity -> new Rental(rentalEntity.getMovieId(), rentalEntity.getUserId())
         );
@@ -36,6 +42,6 @@ public class PostgresRentalRepository implements RentalRepository {
 
     @Override
     public void removeByMovie(MovieId movieId) {
-        repositoryJPA.deleteById(movieId.getValue());
+        rentalRepositoryJPA.deleteById(movieId.getValue());
     }
 }
