@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -50,6 +51,11 @@ public class PostgresRentalRepository implements RentalRepository {
 
     @Override
     public List<Movie> getMoviesRentedByUser(UserId userId) {
-        return null;
+        return rentalRepositoryJPA
+                .findByUserId(userId.getValue())
+                .stream()
+                .map(RentalEntity::getMovie)
+                .map(movieEntity -> new Movie(movieEntity.getId(), movieEntity.getName()))
+                .collect(Collectors.toList());
     }
 }

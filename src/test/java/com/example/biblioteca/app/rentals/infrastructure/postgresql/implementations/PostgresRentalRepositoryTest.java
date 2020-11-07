@@ -2,9 +2,11 @@ package com.example.biblioteca.app.rentals.infrastructure.postgresql.implementat
 
 import com.example.biblioteca.app.rentals.infrastructure.postgresql.entities.MovieEntity;
 import com.example.biblioteca.app.rentals.infrastructure.postgresql.entities.RentalEntity;
+import com.example.biblioteca.modules.rentals.domain.aggregates.Movie;
 import com.example.biblioteca.modules.rentals.domain.aggregates.Rental;
 import com.example.biblioteca.modules.rentals.domain.exceptions.MovieNotFound;
 import com.example.biblioteca.modules.rentals.domain.valueObjects.MovieId;
+import com.example.biblioteca.modules.rentals.domain.valueObjects.UserId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -12,12 +14,14 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static com.example.biblioteca.app.rentals.infrastructure.fixtures.RentalEntityFixture.customMovieEntity;
 import static com.example.biblioteca.app.rentals.infrastructure.fixtures.RentalEntityFixture.defaultRentalEntity;
 import static com.example.biblioteca.modules.rentals.domain.fixtures.RentalFixture.*;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -97,5 +101,17 @@ class PostgresRentalRepositoryTest {
         sut.removeByMovie(new MovieId(MOVIE_ID));
 
         verify(rentalRepositoryJPA).deleteById(MOVIE_ID);
+    }
+
+    @Test
+    void getMoviesRentedByUser_shouldReturnTheMoviesRentedByTheUser() {
+        RentalEntity rental = defaultRentalEntity();
+        when(rentalRepositoryJPA.findByUserId(USER_ID)).thenReturn(singletonList(rental));
+
+        List<Movie> result = sut.getMoviesRentedByUser(new UserId(USER_ID));
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getId().getValue()).isEqualTo(rental.getMovie().getId());
+        assertThat(result.get(0).getName().getValue()).isEqualTo(rental.getMovie().getName());
     }
 }
