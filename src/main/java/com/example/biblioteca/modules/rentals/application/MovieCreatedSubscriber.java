@@ -2,14 +2,16 @@ package com.example.biblioteca.modules.rentals.application;
 
 import com.example.biblioteca.modules.shared.events.MovieCreatedEvent;
 import com.example.biblioteca.modules.shared.events.Subscriber;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class MovieCreatedSubscriber implements Subscriber<MovieCreatedEvent> {
+    private final MovieService movieService;
+
     @Override
     public void on(MovieCreatedEvent event) {
-        System.out.println("Id: " + event.id);
-        System.out.println("Name: " + event.name);
-        System.out.println("Year: " + event.year);
+        movieService.create(event.id, event.name);
     }
 }
