@@ -2,13 +2,16 @@ package com.example.biblioteca.app.rentals.infrastructure.postgresql.implementat
 
 import com.example.biblioteca.app.rentals.infrastructure.postgresql.entities.MovieEntity;
 import com.example.biblioteca.app.rentals.infrastructure.postgresql.entities.RentalEntity;
+import com.example.biblioteca.modules.rentals.domain.aggregates.Movie;
 import com.example.biblioteca.modules.rentals.domain.aggregates.Rental;
 import com.example.biblioteca.modules.rentals.domain.exceptions.MovieNotFound;
 import com.example.biblioteca.modules.rentals.domain.valueObjects.MovieId;
+import com.example.biblioteca.modules.rentals.domain.valueObjects.UserId;
 import com.example.biblioteca.modules.rentals.repositories.RentalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -43,5 +46,10 @@ public class PostgresRentalRepository implements RentalRepository {
     @Override
     public void removeByMovie(MovieId movieId) {
         rentalRepositoryJPA.deleteById(movieId.getValue());
+    }
+
+    @Override
+    public List<Movie> getMoviesRentedByUser(UserId userId) {
+        return null;
     }
 }

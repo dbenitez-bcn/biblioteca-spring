@@ -1,9 +1,11 @@
 package com.example.biblioteca.modules.rentals.application;
 
+import com.example.biblioteca.modules.rentals.domain.aggregates.Movie;
 import com.example.biblioteca.modules.rentals.domain.aggregates.Rental;
 import com.example.biblioteca.modules.rentals.domain.exceptions.CheckoutNotAllowed;
 import com.example.biblioteca.modules.rentals.domain.exceptions.MovieAlreadyRented;
 import com.example.biblioteca.modules.rentals.domain.valueObjects.MovieId;
+import com.example.biblioteca.modules.rentals.domain.valueObjects.UserId;
 import com.example.biblioteca.modules.rentals.repositories.RentalRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,10 +14,12 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static com.example.biblioteca.modules.rentals.domain.fixtures.RentalFixture.*;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -83,5 +87,15 @@ class RentalsServiceTest {
         sut.checkout(MOVIE_ID, USER_ID);
 
         verify(rentalRepository, never()).removeByMovie(any(MovieId.class));
+    }
+
+    @Test
+    void rentals_shouldReturnTheMoviesRentedByTheGivenUser() {
+        Movie movie = defaultMovie();
+        when(rentalRepository.getMoviesRentedByUser(new UserId(USER_ID))).thenReturn(singletonList(movie));
+
+        List<Movie> rentals = sut.rentals(USER_ID);
+
+        assertThat(rentals).containsOnly(movie);
     }
 }
