@@ -1,5 +1,6 @@
 package com.example.biblioteca.app.rentals.application.controllers;
 
+import com.example.biblioteca.app.rentals.application.responses.MovieResponse;
 import com.example.biblioteca.modules.rentals.application.RentalsService;
 import com.example.biblioteca.modules.rentals.domain.aggregates.Movie;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,11 +50,12 @@ class RentalsControllerTest {
     @Test
     void rentals_shouldReturnTheListOfMoviesRented() {
         Movie movie = defaultMovie();
+        MovieResponse movieResponse = new MovieResponse(movie.getId().getValue(), movie.getName().getValue());
         when(rentalsService.rentals(USER_ID)).thenReturn(singletonList(movie));
 
-        ResponseEntity<List<Movie>> result = sut.rentals(USER_ID);
+        ResponseEntity<List<MovieResponse>> result = sut.rentals(USER_ID);
 
         assertThat(result.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
-        assertThat(result.getBody()).containsOnly(movie);
+        assertThat(result.getBody()).containsOnly(movieResponse);
     }
 }
