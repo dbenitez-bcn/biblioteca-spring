@@ -1,6 +1,7 @@
 package com.example.biblioteca.app.rentals.application.controllers;
 
 import com.example.biblioteca.modules.rentals.application.RentalsService;
+import com.example.biblioteca.modules.rentals.domain.aggregates.Movie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -8,10 +9,13 @@ import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static com.example.biblioteca.modules.rentals.domain.fixtures.RentalFixture.MOVIE_ID;
-import static com.example.biblioteca.modules.rentals.domain.fixtures.RentalFixture.USER_ID;
+import java.util.List;
+
+import static com.example.biblioteca.modules.rentals.domain.fixtures.RentalFixture.*;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 class RentalsControllerTest {
@@ -40,5 +44,16 @@ class RentalsControllerTest {
 
         verify(rentalsService).checkout(MOVIE_ID, USER_ID);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void rentals_shouldReturnTheListOfMoviesRented() {
+        Movie movie = defaultMovie();
+        when(rentalsService.rentals(USER_ID)).thenReturn(singletonList(movie));
+
+        ResponseEntity<List<Movie>> result = sut.rentals(USER_ID);
+
+        assertThat(result.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
+        assertThat(result.getBody()).containsOnly(movie);
     }
 }

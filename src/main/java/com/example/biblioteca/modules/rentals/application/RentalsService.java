@@ -1,5 +1,6 @@
 package com.example.biblioteca.modules.rentals.application;
 
+import com.example.biblioteca.modules.rentals.domain.aggregates.Movie;
 import com.example.biblioteca.modules.rentals.domain.aggregates.Rental;
 import com.example.biblioteca.modules.rentals.domain.exceptions.CheckoutNotAllowed;
 import com.example.biblioteca.modules.rentals.domain.exceptions.MovieAlreadyRented;
@@ -8,6 +9,7 @@ import com.example.biblioteca.modules.rentals.repositories.RentalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,5 +36,9 @@ public class RentalsService {
             }
             repository.removeByMovie(rental.getMovieId());
         });
+    }
+
+    public List<Movie> rentals(UUID userId) {
+        return null;
     }
 }
