@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @AllArgsConstructor
 @RequestMapping("v1/movie")
@@ -37,7 +38,7 @@ public class MovieController {
         List<MovieResponseVM> movies = fetchedMovies
                 .stream()
                 .map(this::mapMovieToResponseVM)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         if (movies.size() > 0) {
             return ResponseEntity.ok(movies);

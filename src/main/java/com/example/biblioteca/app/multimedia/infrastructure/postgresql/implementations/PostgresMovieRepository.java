@@ -9,7 +9,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Repository("postgres")
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class PostgresMovieRepository implements MovieRepository {
 
     @Override
     public List<Movie> getAll() {
-        List<Movie> movies = repository.findAll().stream().map(movieEntity -> new Movie(UUID.fromString(movieEntity.getId()), movieEntity.getName(), movieEntity.getYear())).collect(Collectors.toList());
+        List<Movie> movies = repository.findAll().stream().map(movieEntity -> new Movie(UUID.fromString(movieEntity.getId()), movieEntity.getName(), movieEntity.getYear())).collect(toList());
         return movies;
     }
 
