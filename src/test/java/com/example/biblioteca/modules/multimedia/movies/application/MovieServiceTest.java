@@ -6,7 +6,6 @@ import com.example.biblioteca.modules.multimedia.movies.domain.exceptions.Invali
 import com.example.biblioteca.modules.multimedia.movies.domain.valueObjects.MovieName;
 import com.example.biblioteca.modules.multimedia.movies.domain.valueObjects.MovieYear;
 import com.example.biblioteca.modules.multimedia.movies.repositories.MovieRepository;
-import com.example.biblioteca.modules.shared.events.EventBus;
 import com.example.biblioteca.modules.shared.events.MovieCreatedEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,7 @@ class MovieServiceTest {
     private MovieRepository movieRepository;
 
     @Mock
-    private EventBus eventBus;
+    private MovieEmitter movieEmitter;
 
     @InjectMocks
     private MovieService sut;
@@ -58,15 +57,12 @@ class MovieServiceTest {
         UUID result = sut.createMovie(A_MOVIE_NAME, A_MOVIE_YEAR);
 
         verify(movieRepository).upsert(movieCaptor.capture());
-        verify(eventBus).publish(eventCaptor.capture());
-        Movie capturedMovie = movieCaptor.getValue();
-        MovieCreatedEvent capturedEvent = eventCaptor.getValue();
-        assertThat(expectedMovieName).isEqualTo(capturedMovie.getName());
-        assertThat(expectedMovieYear).isEqualTo(capturedMovie.getYear());
-        assertThat(capturedMovie.getId()).isEqualByComparingTo(result);
-        assertThat(capturedEvent.id).isEqualByComparingTo(result);
-        assertThat(capturedEvent.name).isEqualTo(A_MOVIE_NAME);
-        assertThat(capturedEvent.year).isEqualTo(A_MOVIE_YEAR);
+        verify(movieEmitter).emitMovieCreated(movieCaptor.capture());
+        movieCaptor.getAllValues().forEach(capturedMovie -> {
+            assertThat(expectedMovieName).isEqualTo(capturedMovie.getName());
+            assertThat(expectedMovieYear).isEqualTo(capturedMovie.getYear());
+            assertThat(result).isEqualByComparingTo(capturedMovie.getId());
+        });
     }
 
     @Test
